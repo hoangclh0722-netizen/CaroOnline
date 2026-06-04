@@ -1,2 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+using CaroOnline.Server;
+
+Server server = new Server(9999);
+server.Start();
