@@ -7,7 +7,7 @@ using static CaroOnline.Server.NetworkSender;
 
 namespace CaroOnline.Server
 {
-	public class RoomManeger
+	public class RoomManager
 	{
 		//Lưu tất cả các phòng đang có: RoomId -> GameRoom
 		private readonly ConcurrentDictionary<string, GameRoom> rooms = new();
@@ -113,7 +113,7 @@ namespace CaroOnline.Server
             room.StartGame();
         }
         //Rời phòng
-        public void LeaveRooom(string playerId)
+        public void LeaveRoom(string playerId)
         {
             GameRoom? room = FindRoomByPlayer(playerId);
             if (room == null) return;
