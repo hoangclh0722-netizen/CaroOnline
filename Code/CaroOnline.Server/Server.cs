@@ -36,21 +36,13 @@ namespace CaroOnline.Server
 
         private void HandleClient(TcpClient client)
         {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer = new byte[4096];
-
             try
             {
+                NetworkStream stream = client.GetStream();
+
                 while (true)
                 {
-                    int bytesRead = stream.Read(buffer, 0, buffer.Length);
-
-                    if (bytesRead == 0)
-                    {
-                        break;
-                    }
-
-                    Message? message = MessageHelper.Deserialize(buffer, bytesRead);
+                    Message? message = MessageHelper.Receive(stream);
 
                     if (message == null)
                     {
@@ -65,6 +57,10 @@ namespace CaroOnline.Server
 
                     ProcessMessage(stream, message);
                 }
+            }
+            catch (EndOfStreamException)
+            {
+                Console.WriteLine("Client closed connection");
             }
             catch (Exception ex)
             {
@@ -81,18 +77,29 @@ namespace CaroOnline.Server
         {
             if (message.Type == MessageType.LOGIN)
             {
+                if (string.IsNullOrWhiteSpace(message.PlayerName))
+                {
+                    Send(stream, new Message
+                    {
+                        Type = MessageType.ERROR,
+                        Message2 = "Player name is required"
+                    });
+                    return;
+                }
+
+                string playerName = message.PlayerName.Trim();
                 string playerId = Guid.NewGuid().ToString("N").Substring(0, 8);
 
                 Message response = new Message
                 {
                     Type = MessageType.LOGIN_OK,
-                    PlayerName = message.PlayerName,
+                    PlayerName = playerName,
                     PlayerId = playerId
                 };
 
                 Send(stream, response);
 
-                Console.WriteLine("Login OK: " + message.PlayerName + " - " + playerId);
+                Console.WriteLine("Login OK: " + playerName + " - " + playerId);
                 return;
             }
 
@@ -105,8 +112,7 @@ namespace CaroOnline.Server
 
         private void Send(NetworkStream stream, Message message)
         {
-            byte[] data = MessageHelper.Serialize(message);
-            stream.Write(data, 0, data.Length);
+            MessageHelper.Send(stream, message);
         }
     }
 }
