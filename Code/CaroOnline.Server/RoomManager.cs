@@ -16,11 +16,11 @@ namespace CaroOnline.Server
 		private readonly ConcurrentDictionary<string, NetworkStream> allClients = new();
 
 		//Đăng ký / Hủy client
-		public void ResigerClient(string playerId, NetworkStream stream)
+		public void RegisgerClient(string playerId, NetworkStream stream)
 		{
 			allClients[playerId] = stream;
 		}
-		public void UnresigerClient(string playerId)
+		public void UnregisgerClient(string playerId)
 		{
 			allClients.TryRemove(playerId, out _);
 			//Nếu player có trong phòng nào thì xử lý disconect
@@ -161,6 +161,13 @@ namespace CaroOnline.Server
                 try { Send(stream, message); }
                 catch { /* client đã disconnect, bỏ qua */ }
             }
+        }
+        public void PlaceStone(string playerId, int row, int col)
+        {
+            GameRoom? room = FindRoomByPlayer(playerId);
+            if (room == null) return;
+
+            room.PlaceStone(playerId, row, col);
         }
         private GameRoom? FindRoomByPlayer(string playerId)
         {

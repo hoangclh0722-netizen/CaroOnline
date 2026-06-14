@@ -20,6 +20,7 @@ namespace CaroOnline.Server
         private string? guestId;
         private string? guestName;
         private NetworkStream? guestStream;
+        private bool isGameOver;
 
         //Turn timer
         private readonly TurnTimerManager turnTimerManager = new();
@@ -79,6 +80,7 @@ namespace CaroOnline.Server
         //Relay nuoc di
         public void PlaceStone(string playerId, int row, int col)
         {
+            if (isGameOver) return;
             //Khong phai luot cua player nay
             if (playerId != currentTurnPlayerId)
             {
@@ -95,7 +97,7 @@ namespace CaroOnline.Server
                 return;
             }
 
-            //Dung timer luot cu bang TurnTimerManager
+            //Dung timer luot bang TurnTimerManager
             StopTurnTimer();
 
             var moveMessage = new Message
@@ -103,7 +105,7 @@ namespace CaroOnline.Server
                 Type = MessageType.STONE_PLACED,
                 Row = row,
                 Col = col,
-                PlayerId = playerId
+                Symbol = playerId == hostId ? "X" : "O"
             };
 
             Send(hostStream, moveMessage);
@@ -122,6 +124,7 @@ namespace CaroOnline.Server
         //Thong bao doi thu roi phong
         public void NotifyOpponentLeft(string playerId)
         {
+            isGameOver = true;
             StopTurnTimer();
 
             NetworkStream? opponentStream = playerId == hostId ? guestStream : hostStream;
@@ -140,7 +143,38 @@ namespace CaroOnline.Server
         private void StartTurnTimer()
         {
             string playerName = GetPlayerName(currentTurnPlayerId);
-            turnTimerManager.StartNewTurn(playerName);
+
+            turnTimerManager.StartNewTurn(
+                playerId: currentTurnPlayerId!,
+                playerName: playerName,
+                onTick: seconds =>
+                {
+                    var tick = new Message
+                    {
+                        Type = MessageType.TIMER_TICK,
+                        SecondsLeft = seconds
+                    };
+                    Send(hostStream, tick);
+                    if (guestStream != null) Send(guestStream, tick);
+                },
+                onTimeout: timedOutPlayerId =>
+                {
+                    isGameOver = true;
+                    StopTurnTimer();
+
+                    string winnerSymbol = timedOutPlayerId == hostId ? "O" : "X";
+
+                    var gameOver = new Message
+                    {
+                        Type = MessageType.GAME_OVER,
+                        Winner = winnerSymbol
+                    };
+                    Send(hostStream, gameOver);
+                    if (guestStream != null) Send(guestStream, gameOver);
+
+                    Console.WriteLine($"[Room {RoomId}] {playerName} het gio - {winnerSymbol} thang.");
+                }
+            );
         }
 
         private void StopTurnTimer()
