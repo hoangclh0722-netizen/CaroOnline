@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -10,6 +11,9 @@ namespace CaroOnline.Server
     {
         private readonly int port;
         private TcpListener? listener;
+
+        private readonly RoomManager roomManager = new();
+        private readonly ConcurrentDictionary<NetworkStream, (string PlayerId, string PlayerName)> sessions = new();
 
         public Server(int port)
         {
@@ -36,10 +40,10 @@ namespace CaroOnline.Server
 
         private void HandleClient(TcpClient client)
         {
+            NetworkStream stream = client.GetStream();
+
             try
             {
-                NetworkStream stream = client.GetStream();
-
                 while (true)
                 {
                     Message? message = MessageHelper.Receive(stream);
@@ -68,6 +72,12 @@ namespace CaroOnline.Server
             }
             finally
             {
+                // Xu ly disconnect: roi phong + xoa session
+                if (sessions.TryRemove(stream, out var session))
+                {
+                    roomManager.UnregisgerClient(session.PlayerId);
+                }
+
                 client.Close();
                 Console.WriteLine("Client disconnected");
             }
@@ -75,6 +85,7 @@ namespace CaroOnline.Server
 
         private void ProcessMessage(NetworkStream stream, Message message)
         {
+            // LOGIN xu ly truoc, chua can session
             if (message.Type == MessageType.LOGIN)
             {
                 if (string.IsNullOrWhiteSpace(message.PlayerName))
@@ -90,6 +101,9 @@ namespace CaroOnline.Server
                 string playerName = message.PlayerName.Trim();
                 string playerId = Guid.NewGuid().ToString("N").Substring(0, 8);
 
+                sessions[stream] = (playerId, playerName);
+                roomManager.RegisgerClient(playerId, stream);
+
                 Message response = new Message
                 {
                     Type = MessageType.LOGIN_OK,
@@ -103,11 +117,54 @@ namespace CaroOnline.Server
                 return;
             }
 
-            Send(stream, new Message
+            // Cac message khac can da login
+            if (!sessions.TryGetValue(stream, out var sessionInfo))
             {
-                Type = MessageType.ERROR,
-                Message2 = "Unknown message type"
-            });
+                Send(stream, new Message
+                {
+                    Type = MessageType.ERROR,
+                    Message2 = "Ban chua dang nhap"
+                });
+                return;
+            }
+
+            string pid = sessionInfo.PlayerId;
+            string pname = sessionInfo.PlayerName;
+
+            switch (message.Type)
+            {
+                case MessageType.CREATE_ROOM:
+                    roomManager.CreateRoom(pid, pname, stream);
+                    break;
+
+                case MessageType.JOIN_ROOM:
+                    roomManager.JoinRoom(message.RoomId!, pid, pname, stream);
+                    break;
+
+                case MessageType.LEAVE_ROOM:
+                    roomManager.LeaveRoom(pid);
+                    break;
+
+                case MessageType.PLACE_STONE:
+                    roomManager.PlaceStone(pid, message.Row, message.Col);
+                    break;
+
+                case MessageType.GET_ROOM_LIST:
+                    Send(stream, new Message
+                    {
+                        Type = MessageType.ROOM_LIST,
+                        Rooms = roomManager.GetRoomList()
+                    });
+                    break;
+
+                default:
+                    Send(stream, new Message
+                    {
+                        Type = MessageType.ERROR,
+                        Message2 = "Unknown message type"
+                    });
+                    break;
+            }
         }
 
         private void Send(NetworkStream stream, Message message)
