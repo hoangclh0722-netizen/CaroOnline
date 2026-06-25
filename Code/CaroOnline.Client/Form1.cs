@@ -136,7 +136,12 @@ namespace CaroOnline.Client
 
                 if (response.Type == MessageType.LOGIN_OK)
                 {
-                    SetStatus($"Dang nhap thanh cong. PlayerId: {response.PlayerId}");
+                    GameForm gameForm = new GameForm();
+
+                    gameForm.Show();
+
+                    this.Hide();
+
                     return;
                 }
 
@@ -157,6 +162,11 @@ namespace CaroOnline.Client
         private void SetStatus(string text)
         {
             _statusLabel.Text = text;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

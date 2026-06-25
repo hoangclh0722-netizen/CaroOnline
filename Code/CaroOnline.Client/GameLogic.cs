@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace CaroOnline.Client
 {
     public class GameLogic
@@ -94,8 +96,9 @@ namespace CaroOnline.Client
                 {
                     int r = row + dir[0] * sign;
                     int c = col + dir[1] * sign;
-                    while (r >= 0 && r < Board.Size && c >= 0 && c < Board.Size
-                           && Board.Get(r, c) == player)
+                    while (r >= 0 && r < Board.Rows &&
+                           c >= 0 && c < Board.Cols &&
+                           Board.Get(r, c) == player)
                     {
                         cells.Add((r, c));
                         r += dir[0] * sign;
@@ -104,7 +107,7 @@ namespace CaroOnline.Client
                 }
 
                 if (cells.Count >= 5)
-                    return cells;
+                    return cells.Take(5).ToList();
             }
 
             return null;
