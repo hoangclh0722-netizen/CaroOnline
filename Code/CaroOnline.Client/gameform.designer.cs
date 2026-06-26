@@ -2,7 +2,7 @@ namespace CaroOnline.Client
 {
     partial class GameForm
     {
-        private System.ComponentModel.IContainer? components = null;
+        private System.ComponentModel.IContainer components = null;
 
         protected override void Dispose(bool disposing)
         {
@@ -18,56 +18,82 @@ namespace CaroOnline.Client
 
         private void InitializeComponent()
         {
-            panel1 = new Panel();
-            panel2 = new Panel();
             panelBoard = new Panel();
-            panel1.SuspendLayout();
-            panel2.SuspendLayout();
+            roomLabel = new Label();
+            symbolLabel = new Label();
+            turnLabel = new Label();
+            timerLabel = new Label();
             SuspendLayout();
-            // 
-            // panel1
-            // 
-            panel1.Controls.Add(panel2);
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(250, 125);
-            panel1.TabIndex = 0;
-            // 
-            // panel2
-            // 
-            panel2.Controls.Add(panelBoard);
-            panel2.Location = new Point(0, 0);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(1199, 516);
-            panel2.TabIndex = 0;
             // 
             // panelBoard
             // 
-            panelBoard.Location = new Point(58, 30);
+            panelBoard.Location = new Point(24, 66);
             panelBoard.Name = "panelBoard";
             panelBoard.Size = new Size(700, 595);
-            panelBoard.TabIndex = 1;
-            panelBoard.Paint += panel3_Paint;
+            panelBoard.TabIndex = 4;
+            // 
+            // roomLabel
+            // 
+            roomLabel.AutoSize = true;
+            roomLabel.Location = new Point(24, 24);
+            roomLabel.Name = "roomLabel";
+            roomLabel.Size = new Size(71, 20);
+            roomLabel.TabIndex = 0;
+            roomLabel.Text = "Phong: -";
+            // 
+            // symbolLabel
+            // 
+            symbolLabel.AutoSize = true;
+            symbolLabel.Location = new Point(155, 24);
+            symbolLabel.Name = "symbolLabel";
+            symbolLabel.Size = new Size(69, 20);
+            symbolLabel.TabIndex = 1;
+            symbolLabel.Text = "Quan: -";
+            // 
+            // turnLabel
+            // 
+            turnLabel.AutoSize = true;
+            turnLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            turnLabel.Location = new Point(292, 24);
+            turnLabel.Name = "turnLabel";
+            turnLabel.Size = new Size(123, 20);
+            turnLabel.TabIndex = 2;
+            turnLabel.Text = "Dang cho tran...";
+            // 
+            // timerLabel
+            // 
+            timerLabel.AutoSize = true;
+            timerLabel.Location = new Point(600, 24);
+            timerLabel.Name = "timerLabel";
+            timerLabel.Size = new Size(86, 20);
+            timerLabel.TabIndex = 3;
+            timerLabel.Text = "Thoi gian: -";
             // 
             // GameForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(805, 671);
-            Controls.Add(panel1);
+            AutoScroll = true;
+            ClientSize = new Size(805, 720);
+            Controls.Add(timerLabel);
+            Controls.Add(turnLabel);
+            Controls.Add(symbolLabel);
+            Controls.Add(roomLabel);
+            Controls.Add(panelBoard);
             Name = "GameForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Caro Online";
             Load += GameForm_Load;
-            panel1.ResumeLayout(false);
-            panel2.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-        private Panel panel1;
-        private Panel panel2;
         private Panel panelBoard;
+        private Label roomLabel;
+        private Label symbolLabel;
+        private Label turnLabel;
+        private Label timerLabel;
     }
 }
