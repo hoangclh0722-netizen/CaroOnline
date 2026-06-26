@@ -1,4 +1,3 @@
-using System;
 using System.Net.Sockets;
 using CaroOnline.Shared;
 using static CaroOnline.Server.NetworkSender;
@@ -7,24 +6,30 @@ namespace CaroOnline.Server
 {
     public class GameRoom
     {
-        //Thong tin phong
+        private const int Rows = 17;
+        private const int Cols = 20;
+        private const int Empty = 0;
+        private const int HostStone = 1;
+        private const int GuestStone = 2;
+
         public string RoomId { get; }
         public string HostName { get; }
         public bool IsFull => guestId != null;
 
-        //Host
         private readonly string hostId;
         private readonly NetworkStream hostStream;
+        private readonly int[,] board = new int[Rows, Cols];
+        private readonly object stateLock = new();
 
-        //Guest
         private string? guestId;
         private string? guestName;
         private NetworkStream? guestStream;
         private bool isGameOver;
+        private int moveCount;
 
-        //Turn timer
         private readonly TurnTimerManager turnTimerManager = new();
         private string? currentTurnPlayerId;
+
         public GameRoom(string roomId, string hostId, string hostName, NetworkStream hostStream)
         {
             RoomId = roomId;
@@ -33,7 +38,6 @@ namespace CaroOnline.Server
             this.hostStream = hostStream;
         }
 
-        //Them guest vao phong
         public void AddGuest(string playerId, string playerName, NetworkStream stream)
         {
             guestId = playerId;
@@ -41,13 +45,11 @@ namespace CaroOnline.Server
             guestStream = stream;
         }
 
-        //Kiem tra player co trong phong khong
         public bool HasPlayer(string playerId)
         {
             return playerId == hostId || playerId == guestId;
         }
 
-        //Bat dau game
         public void StartGame()
         {
             if (guestStream == null)
@@ -55,7 +57,6 @@ namespace CaroOnline.Server
                 return;
             }
 
-            //Host danh X, Guest danh O
             Send(hostStream, new Message
             {
                 Type = MessageType.GAME_START,
@@ -72,59 +73,133 @@ namespace CaroOnline.Server
 
             Console.WriteLine($"[Room {RoomId}] Game bat dau - {HostName}(X) vs {guestName}(O)");
 
-            //Host di truoc
             currentTurnPlayerId = hostId;
             StartTurnTimer();
         }
 
-        //Relay nuoc di
         public void PlaceStone(string playerId, int row, int col)
         {
-            if (isGameOver) return;
-            //Khong phai luot cua player nay
-            if (playerId != currentTurnPlayerId)
+            Message? error = null;
+            Message? moveMessage = null;
+            Message? gameOverMessage = null;
+            bool shouldStartNextTurn = false;
+
+            lock (stateLock)
+            {
+                if (isGameOver)
+                {
+                    return;
+                }
+
+                if (playerId != currentTurnPlayerId)
+                {
+                    error = new Message
+                    {
+                        Type = MessageType.ERROR,
+                        Message2 = "Chua den luot cua ban."
+                    };
+                }
+                else if (!IsInsideBoard(row, col))
+                {
+                    error = new Message
+                    {
+                        Type = MessageType.ERROR,
+                        Message2 = "Nuoc di nam ngoai ban co."
+                    };
+                }
+                else if (board[row, col] != Empty)
+                {
+                    error = new Message
+                    {
+                        Type = MessageType.ERROR,
+                        Message2 = "O nay da co quan."
+                    };
+                }
+                else
+                {
+                    StopTurnTimer();
+
+                    int stone = playerId == hostId ? HostStone : GuestStone;
+                    string symbol = StoneToSymbol(stone);
+
+                    board[row, col] = stone;
+                    moveCount++;
+
+                    moveMessage = new Message
+                    {
+                        Type = MessageType.STONE_PLACED,
+                        Row = row,
+                        Col = col,
+                        Symbol = symbol
+                    };
+
+                    Console.WriteLine($"[Room {RoomId}] {playerId} dat tai ({row},{col})");
+
+                    if (HasFiveInRow(row, col, stone))
+                    {
+                        isGameOver = true;
+                        gameOverMessage = new Message
+                        {
+                            Type = MessageType.GAME_OVER,
+                            Winner = symbol,
+                            Message2 = symbol + " thang."
+                        };
+                    }
+                    else if (moveCount >= Rows * Cols)
+                    {
+                        isGameOver = true;
+                        gameOverMessage = new Message
+                        {
+                            Type = MessageType.GAME_OVER,
+                            Winner = "DRAW",
+                            Message2 = "Hoa."
+                        };
+                    }
+                    else
+                    {
+                        SwitchTurn();
+                        shouldStartNextTurn = true;
+                    }
+                }
+            }
+
+            if (error != null)
             {
                 NetworkStream? senderStream = GetStream(playerId);
                 if (senderStream != null)
                 {
-                    Send(senderStream, new Message
-                    {
-                        Type = MessageType.ERROR,
-                        Message2 = "Chua den luot cua ban."
-                    });
+                    Send(senderStream, error);
                 }
 
                 return;
             }
 
-            //Dung timer luot bang TurnTimerManager
-            StopTurnTimer();
-
-            var moveMessage = new Message
+            if (moveMessage != null)
             {
-                Type = MessageType.STONE_PLACED,
-                Row = row,
-                Col = col,
-                Symbol = playerId == hostId ? "X" : "O"
-            };
-
-            Send(hostStream, moveMessage);
-            if (guestStream != null)
-            {
-                Send(guestStream, moveMessage);
+                Broadcast(moveMessage);
             }
 
-            Console.WriteLine($"[Room {RoomId}] {playerId} dat tai ({row},{col})");
+            if (gameOverMessage != null)
+            {
+                StopTurnTimer();
+                Broadcast(gameOverMessage);
+                Console.WriteLine($"[Room {RoomId}] Game over - {gameOverMessage.Winner}");
+                return;
+            }
 
-            //Chuyen luot va bat dau dem gio luot moi
-            SwitchTurn();
-            StartTurnTimer();
+            if (shouldStartNextTurn)
+            {
+                StartTurnTimer();
+            }
         }
 
-        //Thong bao doi thu roi phong
         public void NotifyOpponentLeft(string playerId)
         {
-            isGameOver = true;
+            lock (stateLock)
+            {
+                isGameOver = true;
+            }
+
             StopTurnTimer();
 
             NetworkStream? opponentStream = playerId == hostId ? guestStream : hostStream;
@@ -142,35 +217,48 @@ namespace CaroOnline.Server
 
         private void StartTurnTimer()
         {
-            string playerName = GetPlayerName(currentTurnPlayerId);
+            string? playerId = currentTurnPlayerId;
+            if (playerId == null)
+            {
+                return;
+            }
+
+            string playerName = GetPlayerName(playerId);
 
             turnTimerManager.StartNewTurn(
-                playerId: currentTurnPlayerId!,
+                playerId: playerId,
                 playerName: playerName,
                 onTick: seconds =>
                 {
-                    var tick = new Message
+                    Broadcast(new Message
                     {
                         Type = MessageType.TIMER_TICK,
                         SecondsLeft = seconds
-                    };
-                    Send(hostStream, tick);
-                    if (guestStream != null) Send(guestStream, tick);
+                    });
                 },
                 onTimeout: timedOutPlayerId =>
                 {
-                    isGameOver = true;
+                    string winnerSymbol;
+
+                    lock (stateLock)
+                    {
+                        if (isGameOver)
+                        {
+                            return;
+                        }
+
+                        isGameOver = true;
+                        winnerSymbol = timedOutPlayerId == hostId ? "O" : "X";
+                    }
+
                     StopTurnTimer();
 
-                    string winnerSymbol = timedOutPlayerId == hostId ? "O" : "X";
-
-                    var gameOver = new Message
+                    Broadcast(new Message
                     {
                         Type = MessageType.GAME_OVER,
-                        Winner = winnerSymbol
-                    };
-                    Send(hostStream, gameOver);
-                    if (guestStream != null) Send(guestStream, gameOver);
+                        Winner = winnerSymbol,
+                        Message2 = "Het gio. " + winnerSymbol + " thang."
+                    });
 
                     Console.WriteLine($"[Room {RoomId}] {playerName} het gio - {winnerSymbol} thang.");
                 }
@@ -184,13 +272,15 @@ namespace CaroOnline.Server
 
         private void SwitchTurn()
         {
-            if (currentTurnPlayerId == hostId)
+            currentTurnPlayerId = currentTurnPlayerId == hostId ? guestId : hostId;
+        }
+
+        private void Broadcast(Message message)
+        {
+            Send(hostStream, message);
+            if (guestStream != null)
             {
-                currentTurnPlayerId = guestId;
-            }
-            else
-            {
-                currentTurnPlayerId = hostId;
+                Send(guestStream, message);
             }
         }
 
@@ -222,6 +312,57 @@ namespace CaroOnline.Server
             }
 
             return "Unknown";
+        }
+
+        private static bool IsInsideBoard(int row, int col)
+        {
+            return row >= 0 && row < Rows && col >= 0 && col < Cols;
+        }
+
+        private bool HasFiveInRow(int row, int col, int stone)
+        {
+            int[][] directions =
+            {
+                new[] { 0, 1 },
+                new[] { 1, 0 },
+                new[] { 1, 1 },
+                new[] { 1, -1 }
+            };
+
+            foreach (int[] direction in directions)
+            {
+                int count = 1
+                    + CountStone(row, col, direction[0], direction[1], stone)
+                    + CountStone(row, col, -direction[0], -direction[1], stone);
+
+                if (count >= 5)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private int CountStone(int row, int col, int rowStep, int colStep, int stone)
+        {
+            int count = 0;
+            int currentRow = row + rowStep;
+            int currentCol = col + colStep;
+
+            while (IsInsideBoard(currentRow, currentCol) && board[currentRow, currentCol] == stone)
+            {
+                count++;
+                currentRow += rowStep;
+                currentCol += colStep;
+            }
+
+            return count;
+        }
+
+        private static string StoneToSymbol(int stone)
+        {
+            return stone == HostStone ? "X" : "O";
         }
     }
 }

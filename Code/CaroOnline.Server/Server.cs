@@ -169,7 +169,7 @@ namespace CaroOnline.Server
 
         private void Send(NetworkStream stream, Message message)
         {
-            MessageHelper.Send(stream, message);
+            NetworkSender.Send(stream, message);
         }
     }
 }
