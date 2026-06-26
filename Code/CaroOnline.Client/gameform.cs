@@ -8,7 +8,7 @@ namespace CaroOnline.Client
         {
             InitializeComponent();
 
-            _boardUI = new BoardUI(panelBoard);
+            _boardUI = new BoardUI(panel1);
         }
 
         private void GameForm_Load(object sender, EventArgs e)
@@ -18,7 +18,12 @@ namespace CaroOnline.Client
 
         private void panel3_Paint(object sender, PaintEventArgs e)
         {
-             
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
