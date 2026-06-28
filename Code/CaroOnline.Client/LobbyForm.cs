@@ -18,10 +18,11 @@ namespace CaroOnline.Client
         }
 
         private void LobbyForm_Load(object sender, EventArgs e)
-        {      
-            dgvRooms.Rows.Add("Phòng 01", "Bảo An", "1/2", "Đang chờ");
-            dgvRooms.Rows.Add("Phòng 02", "Công Bình", "1/2", "Đang chờ");
-            dgvRooms.Rows.Add("Phòng 03", "Giản Lý", "1/2", "Đang chờ");
+        {
+            dgvDanhSachPhong.Rows.Clear();
+            dgvDanhSachPhong.Rows.Add("Phòng 01", _username, "1/2", "🟢 Đang chờ");
+            dgvDanhSachPhong.Rows.Add("Phòng 02", "Nguyễn Văn A", "2/2", "🔴 Đang chơi");
+            dgvDanhSachPhong.Rows.Add("Phòng 03", "CaroBot", "1/2", "Đang chờ");
         }
     }
 }

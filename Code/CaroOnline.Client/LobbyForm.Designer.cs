@@ -28,128 +28,155 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LobbyForm));
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             btnCreateRoom = new Button();
             btnJoinRoom = new Button();
-            label1 = new Label();
-            btnRefresh = new Button();
             btnQuickJoin = new Button();
             label3 = new Label();
-            dgvRooms = new DataGridView();
-            colRoom = new DataGridViewTextBoxColumn();
-            colHost = new DataGridViewTextBoxColumn();
-            colPlayers = new DataGridViewTextBoxColumn();
-            colStatus = new DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)dgvRooms).BeginInit();
+            dgvDanhSachPhong = new DataGridView();
+            colPhong = new DataGridViewTextBoxColumn();
+            colChuPhong = new DataGridViewTextBoxColumn();
+            colNguoiChoi = new DataGridViewTextBoxColumn();
+            colTrangThai = new DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)dgvDanhSachPhong).BeginInit();
             SuspendLayout();
             // 
             // btnCreateRoom
             // 
-            btnCreateRoom.Location = new Point(401, 150);
+            btnCreateRoom.BackColor = Color.Tomato;
+            btnCreateRoom.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            btnCreateRoom.ForeColor = Color.Navy;
+            btnCreateRoom.Image = (Image)resources.GetObject("btnCreateRoom.Image");
+            btnCreateRoom.ImageAlign = ContentAlignment.TopCenter;
+            btnCreateRoom.Location = new Point(397, 120);
             btnCreateRoom.Name = "btnCreateRoom";
-            btnCreateRoom.Size = new Size(125, 41);
+            btnCreateRoom.Size = new Size(146, 110);
             btnCreateRoom.TabIndex = 1;
             btnCreateRoom.Text = "Tạo phòng";
-            btnCreateRoom.UseVisualStyleBackColor = true;
+            btnCreateRoom.TextAlign = ContentAlignment.BottomCenter;
+            btnCreateRoom.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnCreateRoom.UseVisualStyleBackColor = false;
             // 
             // btnJoinRoom
             // 
-            btnJoinRoom.Location = new Point(639, 150);
+            btnJoinRoom.BackColor = Color.MediumTurquoise;
+            btnJoinRoom.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            btnJoinRoom.ForeColor = Color.Navy;
+            btnJoinRoom.Image = (Image)resources.GetObject("btnJoinRoom.Image");
+            btnJoinRoom.ImageAlign = ContentAlignment.TopCenter;
+            btnJoinRoom.Location = new Point(634, 120);
             btnJoinRoom.Name = "btnJoinRoom";
-            btnJoinRoom.Size = new Size(125, 41);
+            btnJoinRoom.Size = new Size(146, 110);
             btnJoinRoom.TabIndex = 2;
             btnJoinRoom.Text = "Vào phòng";
-            btnJoinRoom.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            label1.Location = new Point(521, 249);
-            label1.Name = "label1";
-            label1.Size = new Size(350, 28);
-            label1.TabIndex = 3;
-            label1.Text = "DANH SÁCH CÁC PHÒNG ĐANG CHỜ:";
-            // 
-            // btnRefresh
-            // 
-            btnRefresh.Location = new Point(895, 252);
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(89, 29);
-            btnRefresh.TabIndex = 4;
-            btnRefresh.Text = "Làm mới";
-            btnRefresh.UseVisualStyleBackColor = true;
+            btnJoinRoom.TextAlign = ContentAlignment.BottomCenter;
+            btnJoinRoom.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnJoinRoom.UseVisualStyleBackColor = false;
             // 
             // btnQuickJoin
             // 
-            btnQuickJoin.Location = new Point(850, 150);
+            btnQuickJoin.BackColor = Color.Gold;
+            btnQuickJoin.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            btnQuickJoin.ForeColor = Color.Navy;
+            btnQuickJoin.Image = (Image)resources.GetObject("btnQuickJoin.Image");
+            btnQuickJoin.ImageAlign = ContentAlignment.TopCenter;
+            btnQuickJoin.Location = new Point(864, 120);
             btnQuickJoin.Name = "btnQuickJoin";
-            btnQuickJoin.Size = new Size(125, 41);
+            btnQuickJoin.Size = new Size(146, 110);
             btnQuickJoin.TabIndex = 5;
             btnQuickJoin.Text = "Vào nhanh";
-            btnQuickJoin.UseVisualStyleBackColor = true;
+            btnQuickJoin.TextAlign = ContentAlignment.BottomCenter;
+            btnQuickJoin.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnQuickJoin.UseVisualStyleBackColor = false;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Regular, GraphicsUnit.Point, 163);
+            label3.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label3.ForeColor = Color.Navy;
             label3.Location = new Point(473, 22);
             label3.Name = "label3";
-            label3.Size = new Size(437, 46);
+            label3.Size = new Size(458, 46);
             label3.TabIndex = 7;
             label3.Text = "CARO ONLINE - SẢNH CHỜ";
             // 
-            // dgvRooms
+            // dgvDanhSachPhong
             // 
-            dgvRooms.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvRooms.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvRooms.Columns.AddRange(new DataGridViewColumn[] { colRoom, colHost, colPlayers, colStatus });
-            dgvRooms.Location = new Point(387, 283);
-            dgvRooms.Name = "dgvRooms";
-            dgvRooms.RowHeadersVisible = false;
-            dgvRooms.RowHeadersWidth = 51;
-            dgvRooms.Size = new Size(597, 188);
-            dgvRooms.TabIndex = 9;
+            dgvDanhSachPhong.AllowUserToAddRows = false;
+            dgvDanhSachPhong.BackgroundColor = Color.White;
+            dgvDanhSachPhong.BorderStyle = BorderStyle.None;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = Color.LightCyan;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            dataGridViewCellStyle3.ForeColor = Color.Navy;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvDanhSachPhong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dgvDanhSachPhong.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDanhSachPhong.Columns.AddRange(new DataGridViewColumn[] { colPhong, colChuPhong, colNguoiChoi, colTrangThai });
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = SystemColors.Window;
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = Color.LightCyan;
+            dataGridViewCellStyle4.SelectionForeColor = Color.Black;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
+            dgvDanhSachPhong.DefaultCellStyle = dataGridViewCellStyle4;
+            dgvDanhSachPhong.EnableHeadersVisualStyles = false;
+            dgvDanhSachPhong.GridColor = Color.Gainsboro;
+            dgvDanhSachPhong.Location = new Point(473, 275);
+            dgvDanhSachPhong.Name = "dgvDanhSachPhong";
+            dgvDanhSachPhong.RowHeadersVisible = false;
+            dgvDanhSachPhong.RowHeadersWidth = 51;
+            dgvDanhSachPhong.Size = new Size(502, 188);
+            dgvDanhSachPhong.TabIndex = 8;
             // 
-            // colRoom
+            // colPhong
             // 
-            colRoom.HeaderText = "Phòng";
-            colRoom.MinimumWidth = 6;
-            colRoom.Name = "colRoom";
+            colPhong.HeaderText = "Phòng";
+            colPhong.MinimumWidth = 6;
+            colPhong.Name = "colPhong";
+            colPhong.Width = 125;
             // 
-            // colHost
+            // colChuPhong
             // 
-            colHost.HeaderText = "Chủ phòng";
-            colHost.MinimumWidth = 6;
-            colHost.Name = "colHost";
+            colChuPhong.HeaderText = "Chủ phòng";
+            colChuPhong.MinimumWidth = 6;
+            colChuPhong.Name = "colChuPhong";
+            colChuPhong.Width = 125;
             // 
-            // colPlayers
+            // colNguoiChoi
             // 
-            colPlayers.HeaderText = "Người chơi";
-            colPlayers.MinimumWidth = 6;
-            colPlayers.Name = "colPlayers";
+            colNguoiChoi.HeaderText = "Người chơi";
+            colNguoiChoi.MinimumWidth = 6;
+            colNguoiChoi.Name = "colNguoiChoi";
+            colNguoiChoi.Width = 125;
             // 
-            // colStatus
+            // colTrangThai
             // 
-            colStatus.HeaderText = "Trạng thái";
-            colStatus.MinimumWidth = 6;
-            colStatus.Name = "colStatus";
+            colTrangThai.HeaderText = "Trạng thái";
+            colTrangThai.MinimumWidth = 6;
+            colTrangThai.Name = "colTrangThai";
+            colTrangThai.Width = 125;
             // 
             // LobbyForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.Linen;
             ClientSize = new Size(1317, 503);
-            Controls.Add(dgvRooms);
+            Controls.Add(dgvDanhSachPhong);
             Controls.Add(label3);
             Controls.Add(btnQuickJoin);
-            Controls.Add(btnRefresh);
-            Controls.Add(label1);
             Controls.Add(btnJoinRoom);
             Controls.Add(btnCreateRoom);
             Name = "LobbyForm";
             Text = "LobbyForm";
             Load += LobbyForm_Load;
-            ((System.ComponentModel.ISupportInitialize)dgvRooms).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvDanhSachPhong).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -157,15 +184,12 @@
         #endregion
         private Button btnCreateRoom;
         private Button btnJoinRoom;
-        private Label label1;
-        private Button btnRefresh;
         private Button btnQuickJoin;
         private Label label3;
-        private DataGridView dataGridView1;
-        private DataGridView dgvRooms;
-        private DataGridViewTextBoxColumn colRoom;
-        private DataGridViewTextBoxColumn colHost;
-        private DataGridViewTextBoxColumn colPlayers;
-        private DataGridViewTextBoxColumn colStatus;
+        private DataGridView dgvDanhSachPhong;
+        private DataGridViewTextBoxColumn colPhong;
+        private DataGridViewTextBoxColumn colChuPhong;
+        private DataGridViewTextBoxColumn colNguoiChoi;
+        private DataGridViewTextBoxColumn colTrangThai;
     }
 }
