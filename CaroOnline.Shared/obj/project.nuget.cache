@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "X0jXGO4AL2c=",
+  "success": true,
+  "projectFilePath": "D:\\LAP TRINH MANG\\CaroOnline-main\\CaroOnline.Shared\\CaroOnline.Shared.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\vuho1\\.nuget\\packages\\system.io.pipelines\\10.0.8\\system.io.pipelines.10.0.8.nupkg.sha512",
+    "C:\\Users\\vuho1\\.nuget\\packages\\system.text.encodings.web\\10.0.8\\system.text.encodings.web.10.0.8.nupkg.sha512",
+    "C:\\Users\\vuho1\\.nuget\\packages\\system.text.json\\10.0.8\\system.text.json.10.0.8.nupkg.sha512",
+    "C:\\Users\\vuho1\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.23\\microsoft.netcore.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\vuho1\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.23\\microsoft.windowsdesktop.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\vuho1\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.23\\microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512"
+  ],
+  "logs": []
+}
