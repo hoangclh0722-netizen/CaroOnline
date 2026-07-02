@@ -26,6 +26,7 @@ namespace CaroOnline.Server
         private NetworkStream? guestStream;
         private bool isGameOver;
         private int moveCount;
+        private readonly DatabaseManager db = new DatabaseManager();
 
         private readonly TurnTimerManager turnTimerManager = new();
         private string? currentTurnPlayerId;
@@ -144,6 +145,8 @@ namespace CaroOnline.Server
                             Winner = symbol,
                             Message2 = symbol + " thang."
                         };
+                        string winnerName = symbol == "X" ? HostName : (guestName ?? "Guest");
+                        db.SaveMatchResult(HostName, guestName ?? "Guest", winnerName);
                     }
                     else if (moveCount >= Rows * Cols)
                     {
@@ -154,6 +157,7 @@ namespace CaroOnline.Server
                             Winner = "DRAW",
                             Message2 = "Hoa."
                         };
+                        db.SaveMatchResult(HostName, guestName ?? "Guest", "Hòa");
                     }
                     else
                     {
@@ -252,6 +256,8 @@ namespace CaroOnline.Server
                     }
 
                     StopTurnTimer();
+                    string winnerName = winnerSymbol == "X" ? HostName : (guestName ?? "Guest");
+                    db.SaveMatchResult(HostName, guestName ?? "Guest", winnerName);
 
                     Broadcast(new Message
                     {

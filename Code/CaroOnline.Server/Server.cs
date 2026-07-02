@@ -14,6 +14,7 @@ namespace CaroOnline.Server
 
         private readonly RoomManager roomManager = new();
         private readonly ConcurrentDictionary<NetworkStream, (string PlayerId, string PlayerName)> sessions = new();
+        private readonly DatabaseManager db = new();
 
         public Server(int port)
         {
@@ -85,7 +86,7 @@ namespace CaroOnline.Server
 
         private void ProcessMessage(NetworkStream stream, Message message)
         {
-            // LOGIN xu ly truoc, chua can session
+            // LOGIN kiểm tra Tên người chơi
             if (message.Type == MessageType.LOGIN)
             {
                 if (string.IsNullOrWhiteSpace(message.PlayerName))
@@ -99,6 +100,8 @@ namespace CaroOnline.Server
                 }
 
                 string playerName = message.PlayerName.Trim();
+
+                // 🚀 CẬP NHẬT: Cho đăng nhập luôn mà không thèm check pass nữa!
                 string playerId = Guid.NewGuid().ToString("N").Substring(0, 8);
 
                 sessions[stream] = (playerId, playerName);
@@ -108,15 +111,15 @@ namespace CaroOnline.Server
                 {
                     Type = MessageType.LOGIN_OK,
                     PlayerName = playerName,
-                    PlayerId = playerId
+                    PlayerId = playerId,
+                    Message2 = "Đăng nhập thành công!"
                 };
 
                 Send(stream, response);
+                Console.WriteLine("Login SUCCESS (No Pass): " + playerName + " - " + playerId);
 
-                Console.WriteLine("Login OK: " + playerName + " - " + playerId);
                 return;
             }
-
             // Cac message khac can da login
             if (!sessions.TryGetValue(stream, out var sessionInfo))
             {
@@ -135,10 +138,22 @@ namespace CaroOnline.Server
             {
                 case MessageType.CREATE_ROOM:
                     roomManager.CreateRoom(pid, pname, stream);
-                    break;
+                    Send(stream, new Message
+                    {
+                        Type = MessageType.ROOM_CREATED,
+                        RoomId = pid 
+                    });
+                    Console.WriteLine($"[SERVER] {pname} đã tạo phòng thành công.");
+                    break;               
 
                 case MessageType.JOIN_ROOM:
                     roomManager.JoinRoom(message.RoomId!, pid, pname, stream);
+                    Send(stream, new Message
+                    {
+                        Type = MessageType.ROOM_JOINED,
+                        RoomId = message.RoomId
+                    });
+                    Console.WriteLine($"[SERVER] {pname} đã vào phòng {message.RoomId}.");
                     break;
 
                 case MessageType.LEAVE_ROOM:

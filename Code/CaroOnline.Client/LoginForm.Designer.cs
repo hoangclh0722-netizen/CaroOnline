@@ -72,7 +72,7 @@
             btnLogin.Text = "        Đăng nhập";
             btnLogin.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnLogin.UseVisualStyleBackColor = false;
-            btnLogin.Click += btnLogin_Click_1;
+            btnLogin.Click += btnLogin_Click;
             // 
             // label2
             // 

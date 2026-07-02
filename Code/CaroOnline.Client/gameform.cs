@@ -16,7 +16,7 @@ namespace CaroOnline.Client
         {
             InitializeComponent();
 
-<<<<<<< HEAD
+
             _boardUI = new BoardUI(panelBoard);
             _boardUI.SetInputEnabled(false);
         }
@@ -175,17 +175,15 @@ namespace CaroOnline.Client
                 SetStatus("Khong gui duoc toi server: " + ex.Message);
                 _boardUI.SetInputEnabled(_isMyTurn);
             }
-=======
-            _boardUI = new BoardUI(panel1);
->>>>>>> f4654aafe2fd30c151b336811023f86395576263
+
+            //_boardUI = new BoardUI(panel1);
+
         }
 
         private void GameForm_Load(object sender, EventArgs e)
         {
 
         }
-<<<<<<< HEAD
-=======
 
         private void panel3_Paint(object sender, PaintEventArgs e)
         {
@@ -196,6 +194,5 @@ namespace CaroOnline.Client
         {
 
         }
->>>>>>> f4654aafe2fd30c151b336811023f86395576263
     }
 }

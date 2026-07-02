@@ -40,6 +40,7 @@
             colChuPhong = new DataGridViewTextBoxColumn();
             colNguoiChoi = new DataGridViewTextBoxColumn();
             colTrangThai = new DataGridViewTextBoxColumn();
+            btnRefresh = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvDanhSachPhong).BeginInit();
             SuspendLayout();
             // 
@@ -58,6 +59,7 @@
             btnCreateRoom.TextAlign = ContentAlignment.BottomCenter;
             btnCreateRoom.TextImageRelation = TextImageRelation.ImageAboveText;
             btnCreateRoom.UseVisualStyleBackColor = false;
+            btnCreateRoom.Click += btnCreateRoom_Click;
             // 
             // btnJoinRoom
             // 
@@ -74,6 +76,7 @@
             btnJoinRoom.TextAlign = ContentAlignment.BottomCenter;
             btnJoinRoom.TextImageRelation = TextImageRelation.ImageAboveText;
             btnJoinRoom.UseVisualStyleBackColor = false;
+            btnJoinRoom.Click += btnJoinRoom_Click;
             // 
             // btnQuickJoin
             // 
@@ -90,6 +93,7 @@
             btnQuickJoin.TextAlign = ContentAlignment.BottomCenter;
             btnQuickJoin.TextImageRelation = TextImageRelation.ImageAboveText;
             btnQuickJoin.UseVisualStyleBackColor = false;
+            btnQuickJoin.Click += btnQuickJoin_Click;
             // 
             // label3
             // 
@@ -131,7 +135,7 @@
             dgvDanhSachPhong.Name = "dgvDanhSachPhong";
             dgvDanhSachPhong.RowHeadersVisible = false;
             dgvDanhSachPhong.RowHeadersWidth = 51;
-            dgvDanhSachPhong.Size = new Size(502, 188);
+            dgvDanhSachPhong.Size = new Size(498, 188);
             dgvDanhSachPhong.TabIndex = 8;
             // 
             // colPhong
@@ -162,12 +166,23 @@
             colTrangThai.Name = "colTrangThai";
             colTrangThai.Width = 125;
             // 
+            // btnRefresh
+            // 
+            btnRefresh.Location = new Point(977, 275);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(94, 29);
+            btnRefresh.TabIndex = 9;
+            btnRefresh.Text = "Làm mới";
+            btnRefresh.UseVisualStyleBackColor = true;
+            btnRefresh.Click += btnRefresh_Click;
+            // 
             // LobbyForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Linen;
             ClientSize = new Size(1317, 503);
+            Controls.Add(btnRefresh);
             Controls.Add(dgvDanhSachPhong);
             Controls.Add(label3);
             Controls.Add(btnQuickJoin);
@@ -191,5 +206,6 @@
         private DataGridViewTextBoxColumn colChuPhong;
         private DataGridViewTextBoxColumn colNguoiChoi;
         private DataGridViewTextBoxColumn colTrangThai;
+        private Button btnRefresh;
     }
 }

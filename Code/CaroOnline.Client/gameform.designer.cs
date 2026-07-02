@@ -18,7 +18,7 @@ namespace CaroOnline.Client
 
         private void InitializeComponent()
         {
-<<<<<<< HEAD
+
             panelBoard = new Panel();
             roomLabel = new Label();
             symbolLabel = new Label();
@@ -69,7 +69,7 @@ namespace CaroOnline.Client
             timerLabel.Size = new Size(86, 20);
             timerLabel.TabIndex = 3;
             timerLabel.Text = "Thoi gian: -";
-=======
+
             panel1 = new Panel();
             SuspendLayout();
             // 
@@ -80,13 +80,13 @@ namespace CaroOnline.Client
             panel1.Size = new Size(700, 595);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint;
->>>>>>> f4654aafe2fd30c151b336811023f86395576263
+        
             // 
             // GameForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-<<<<<<< HEAD
+
             AutoScroll = true;
             ClientSize = new Size(805, 720);
             Controls.Add(timerLabel);
@@ -94,10 +94,9 @@ namespace CaroOnline.Client
             Controls.Add(symbolLabel);
             Controls.Add(roomLabel);
             Controls.Add(panelBoard);
-=======
             ClientSize = new Size(919, 638);
             Controls.Add(panel1);
->>>>>>> f4654aafe2fd30c151b336811023f86395576263
+        
             Name = "GameForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Caro Online";
@@ -108,14 +107,14 @@ namespace CaroOnline.Client
 
         #endregion
 
-<<<<<<< HEAD
+
         private Panel panelBoard;
         private Label roomLabel;
         private Label symbolLabel;
         private Label turnLabel;
         private Label timerLabel;
-=======
+
         private Panel panel1;
->>>>>>> f4654aafe2fd30c151b336811023f86395576263
+
     }
 }
