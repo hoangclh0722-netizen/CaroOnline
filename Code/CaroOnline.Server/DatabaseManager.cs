@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Data.Sqlite;
+using System.Data;
 
 namespace CaroOnline.Server
 {
@@ -162,6 +163,39 @@ namespace CaroOnline.Server
             }
 
             return string.IsNullOrEmpty(records) ? "Chưa có kỷ lục nào!" : records;
+        }
+        //Hàm 6: Bảng xếp hạng
+        public DataTable GetTopPlayers(int topCount = 10)
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Username", typeof(string));
+            dt.Columns.Add("Wins", typeof(long));
+            try
+            {
+                using (var connection = new SqliteConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = "SELECT Username, Wins FROM Players ORDER BY Wins DESC LIMIT @topCount";
+
+                    using (var command = new SqliteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@topCount", topCount);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                dt.Rows.Add(reader.GetString(0), reader.GetInt64(1));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi lấy BXH: " + ex.Message);
+            }
+            return dt;
         }
     }
 }

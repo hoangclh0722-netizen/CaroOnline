@@ -29,8 +29,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LobbyForm));
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             btnCreateRoom = new Button();
             btnJoinRoom = new Button();
             btnQuickJoin = new Button();
@@ -41,7 +42,13 @@
             colNguoiChoi = new DataGridViewTextBoxColumn();
             colTrangThai = new DataGridViewTextBoxColumn();
             btnRefresh = new Button();
+            lblBaxXepHang = new Label();
+            dgvBaxXepHang = new DataGridView();
+            colHang = new DataGridViewTextBoxColumn();
+            colTenNguoiChoi = new DataGridViewTextBoxColumn();
+            colSoTranThang = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvDanhSachPhong).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvBaxXepHang).BeginInit();
             SuspendLayout();
             // 
             // btnCreateRoom
@@ -51,7 +58,7 @@
             btnCreateRoom.ForeColor = Color.Navy;
             btnCreateRoom.Image = (Image)resources.GetObject("btnCreateRoom.Image");
             btnCreateRoom.ImageAlign = ContentAlignment.TopCenter;
-            btnCreateRoom.Location = new Point(397, 120);
+            btnCreateRoom.Location = new Point(166, 120);
             btnCreateRoom.Name = "btnCreateRoom";
             btnCreateRoom.Size = new Size(146, 110);
             btnCreateRoom.TabIndex = 1;
@@ -68,7 +75,7 @@
             btnJoinRoom.ForeColor = Color.Navy;
             btnJoinRoom.Image = (Image)resources.GetObject("btnJoinRoom.Image");
             btnJoinRoom.ImageAlign = ContentAlignment.TopCenter;
-            btnJoinRoom.Location = new Point(634, 120);
+            btnJoinRoom.Location = new Point(424, 120);
             btnJoinRoom.Name = "btnJoinRoom";
             btnJoinRoom.Size = new Size(146, 110);
             btnJoinRoom.TabIndex = 2;
@@ -85,7 +92,7 @@
             btnQuickJoin.ForeColor = Color.Navy;
             btnQuickJoin.Image = (Image)resources.GetObject("btnQuickJoin.Image");
             btnQuickJoin.ImageAlign = ContentAlignment.TopCenter;
-            btnQuickJoin.Location = new Point(864, 120);
+            btnQuickJoin.Location = new Point(689, 120);
             btnQuickJoin.Name = "btnQuickJoin";
             btnQuickJoin.Size = new Size(146, 110);
             btnQuickJoin.TabIndex = 5;
@@ -111,27 +118,27 @@
             dgvDanhSachPhong.AllowUserToAddRows = false;
             dgvDanhSachPhong.BackgroundColor = Color.White;
             dgvDanhSachPhong.BorderStyle = BorderStyle.None;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = Color.LightCyan;
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            dataGridViewCellStyle3.ForeColor = Color.Navy;
-            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dgvDanhSachPhong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = Color.LightCyan;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            dataGridViewCellStyle1.ForeColor = Color.Navy;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvDanhSachPhong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvDanhSachPhong.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDanhSachPhong.Columns.AddRange(new DataGridViewColumn[] { colPhong, colChuPhong, colNguoiChoi, colTrangThai });
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = SystemColors.Window;
-            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = Color.LightCyan;
-            dataGridViewCellStyle4.SelectionForeColor = Color.Black;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
-            dgvDanhSachPhong.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = Color.LightCyan;
+            dataGridViewCellStyle2.SelectionForeColor = Color.Black;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgvDanhSachPhong.DefaultCellStyle = dataGridViewCellStyle2;
             dgvDanhSachPhong.EnableHeadersVisualStyles = false;
             dgvDanhSachPhong.GridColor = Color.Gainsboro;
-            dgvDanhSachPhong.Location = new Point(473, 275);
+            dgvDanhSachPhong.Location = new Point(254, 275);
             dgvDanhSachPhong.Name = "dgvDanhSachPhong";
             dgvDanhSachPhong.RowHeadersVisible = false;
             dgvDanhSachPhong.RowHeadersWidth = 51;
@@ -168,7 +175,7 @@
             // 
             // btnRefresh
             // 
-            btnRefresh.Location = new Point(977, 275);
+            btnRefresh.Location = new Point(758, 275);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new Size(94, 29);
             btnRefresh.TabIndex = 9;
@@ -176,12 +183,69 @@
             btnRefresh.UseVisualStyleBackColor = true;
             btnRefresh.Click += btnRefresh_Click;
             // 
+            // lblBaxXepHang
+            // 
+            lblBaxXepHang.AutoSize = true;
+            lblBaxXepHang.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            lblBaxXepHang.ForeColor = Color.Navy;
+            lblBaxXepHang.Location = new Point(960, 120);
+            lblBaxXepHang.Name = "lblBaxXepHang";
+            lblBaxXepHang.Size = new Size(348, 38);
+            lblBaxXepHang.TabIndex = 10;
+            lblBaxXepHang.Text = "BẢNG XẾP HẠNG KỶ LỤC";
+            // 
+            // dgvBaxXepHang
+            // 
+            dgvBaxXepHang.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvBaxXepHang.BackgroundColor = Color.White;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            dataGridViewCellStyle3.ForeColor = Color.Navy;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvBaxXepHang.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dgvBaxXepHang.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvBaxXepHang.Columns.AddRange(new DataGridViewColumn[] { colHang, colTenNguoiChoi, colSoTranThang });
+            dgvBaxXepHang.EnableHeadersVisualStyles = false;
+            dgvBaxXepHang.Location = new Point(886, 177);
+            dgvBaxXepHang.Name = "dgvBaxXepHang";
+            dgvBaxXepHang.RowHeadersVisible = false;
+            dgvBaxXepHang.RowHeadersWidth = 51;
+            dgvBaxXepHang.Size = new Size(444, 300);
+            dgvBaxXepHang.TabIndex = 11;
+            dgvBaxXepHang.CellContentClick += dgvBaxXepHang_CellContentClick;
+            // 
+            // colHang
+            // 
+            colHang.FillWeight = 96.25668F;
+            colHang.HeaderText = "Hạng";
+            colHang.MinimumWidth = 6;
+            colHang.Name = "colHang";
+            // 
+            // colTenNguoiChoi
+            // 
+            colTenNguoiChoi.FillWeight = 101.871658F;
+            colTenNguoiChoi.HeaderText = "Tên Người Chơi";
+            colTenNguoiChoi.MinimumWidth = 6;
+            colTenNguoiChoi.Name = "colTenNguoiChoi";
+            // 
+            // colSoTranThang
+            // 
+            colSoTranThang.FillWeight = 101.871658F;
+            colSoTranThang.HeaderText = "Số Trận Thắng";
+            colSoTranThang.MinimumWidth = 6;
+            colSoTranThang.Name = "colSoTranThang";
+            // 
             // LobbyForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Linen;
-            ClientSize = new Size(1317, 503);
+            ClientSize = new Size(1366, 527);
+            Controls.Add(dgvBaxXepHang);
+            Controls.Add(lblBaxXepHang);
             Controls.Add(btnRefresh);
             Controls.Add(dgvDanhSachPhong);
             Controls.Add(label3);
@@ -192,6 +256,7 @@
             Text = "LobbyForm";
             Load += LobbyForm_Load;
             ((System.ComponentModel.ISupportInitialize)dgvDanhSachPhong).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvBaxXepHang).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -207,5 +272,10 @@
         private DataGridViewTextBoxColumn colNguoiChoi;
         private DataGridViewTextBoxColumn colTrangThai;
         private Button btnRefresh;
+        private Label lblBaxXepHang;
+        private DataGridView dgvBaxXepHang;
+        private DataGridViewTextBoxColumn colHang;
+        private DataGridViewTextBoxColumn colTenNguoiChoi;
+        private DataGridViewTextBoxColumn colSoTranThang;
     }
 }

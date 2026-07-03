@@ -1,14 +1,14 @@
 ﻿namespace CaroOnline.Client
 {
-    partial class Form1
+    partial class LoginForm
     {
         /// <summary>
-        ///  Required designer variable.
+        /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        ///  Clean up any resources being used.
+        /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
@@ -23,126 +23,103 @@
         #region Windows Form Designer generated code
 
         /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
-            titleLabel = new Label();
-            hostLabel = new Label();
-            _hostTextBox = new TextBox();
-            _portInput = new NumericUpDown();
-            nameLabel = new Label();
-            _nameTextBox = new TextBox();
-            _loginButton = new Button();
-            _statusLabel = new Label();
-            ((System.ComponentModel.ISupportInitialize)_portInput).BeginInit();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
+            label1 = new Label();
+            txtUsername = new TextBox();
+            btnLogin = new Button();
+            label2 = new Label();
+            pictureBox1 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
-            // titleLabel
+            // label1
             // 
-            titleLabel.AutoSize = true;
-            titleLabel.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-            titleLabel.Location = new Point(24, 20);
-            titleLabel.Name = "titleLabel";
-            titleLabel.Size = new Size(159, 41);
-            titleLabel.TabIndex = 0;
-            titleLabel.Text = "Caro Online";
+            label1.AutoSize = true;
+            label1.ForeColor = Color.Navy;
+            label1.Location = new Point(150, 188);
+            label1.Name = "label1";
+            label1.Size = new Size(110, 20);
+            label1.TabIndex = 0;
+            label1.Text = "Tên đăng nhập:";
             // 
-            // hostLabel
+            // txtUsername
             // 
-            hostLabel.AutoSize = true;
-            hostLabel.Location = new Point(28, 72);
-            hostLabel.Name = "hostLabel";
-            hostLabel.Size = new Size(50, 20);
-            hostLabel.TabIndex = 1;
-            hostLabel.Text = "Server";
+            txtUsername.Location = new Point(266, 188);
+            txtUsername.Multiline = true;
+            txtUsername.Name = "txtUsername";
+            txtUsername.Size = new Size(145, 20);
+            txtUsername.TabIndex = 1;
             // 
-            // _hostTextBox
+            // btnLogin
             // 
-            _hostTextBox.Location = new Point(110, 68);
-            _hostTextBox.Name = "_hostTextBox";
-            _hostTextBox.Size = new Size(160, 27);
-            _hostTextBox.TabIndex = 2;
-            _hostTextBox.Text = "127.0.0.1";
+            btnLogin.BackColor = Color.DarkTurquoise;
+            btnLogin.FlatAppearance.BorderColor = Color.Aqua;
+            btnLogin.FlatAppearance.MouseOverBackColor = Color.FromArgb(0, 192, 192);
+            btnLogin.FlatStyle = FlatStyle.Flat;
+            btnLogin.ForeColor = Color.White;
+            btnLogin.Image = (Image)resources.GetObject("btnLogin.Image");
+            btnLogin.ImageAlign = ContentAlignment.MiddleLeft;
+            btnLogin.Location = new Point(170, 230);
+            btnLogin.Name = "btnLogin";
+            btnLogin.Padding = new Padding(15, 0, 0, 0);
+            btnLogin.Size = new Size(241, 36);
+            btnLogin.TabIndex = 2;
+            btnLogin.Text = "        Đăng nhập";
+            btnLogin.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnLogin.UseVisualStyleBackColor = false;
+            btnLogin.Click += btnLogin_Click;
             // 
-            // _portInput
+            // label2
             // 
-            _portInput.Location = new Point(280, 68);
-            _portInput.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
-            _portInput.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            _portInput.Name = "_portInput";
-            _portInput.Size = new Size(70, 27);
-            _portInput.TabIndex = 3;
-            _portInput.Value = new decimal(new int[] { 9999, 0, 0, 0 });
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label2.ForeColor = Color.Navy;
+            label2.Location = new Point(129, 36);
+            label2.Name = "label2";
+            label2.Size = new Size(326, 31);
+            label2.TabIndex = 3;
+            label2.Text = "CARO ONLINE - ĐĂNG NHẬP";
             // 
-            // nameLabel
+            // pictureBox1
             // 
-            nameLabel.AutoSize = true;
-            nameLabel.Location = new Point(28, 112);
-            nameLabel.Name = "nameLabel";
-            nameLabel.Size = new Size(62, 20);
-            nameLabel.TabIndex = 4;
-            nameLabel.Text = "Ten choi";
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(241, 81);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(97, 86);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 4;
+            pictureBox1.TabStop = false;
             // 
-            // _nameTextBox
-            // 
-            _nameTextBox.Location = new Point(110, 108);
-            _nameTextBox.Name = "_nameTextBox";
-            _nameTextBox.Size = new Size(240, 27);
-            _nameTextBox.TabIndex = 5;
-            // 
-            // _loginButton
-            // 
-            _loginButton.Location = new Point(110, 150);
-            _loginButton.Name = "_loginButton";
-            _loginButton.Size = new Size(120, 34);
-            _loginButton.TabIndex = 6;
-            _loginButton.Text = "Dang nhap";
-            _loginButton.UseVisualStyleBackColor = true;
-            _loginButton.Click += LoginButton_Click;
-            // 
-            // _statusLabel
-            // 
-            _statusLabel.Location = new Point(28, 200);
-            _statusLabel.Name = "_statusLabel";
-            _statusLabel.Size = new Size(322, 32);
-            _statusLabel.TabIndex = 7;
-            _statusLabel.Text = "Chua ket noi";
-            // 
-            // Form1
+            // LoginForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(380, 250);
-            Controls.Add(_statusLabel);
-            Controls.Add(_loginButton);
-            Controls.Add(_nameTextBox);
-            Controls.Add(nameLabel);
-            Controls.Add(_portInput);
-            Controls.Add(_hostTextBox);
-            Controls.Add(hostLabel);
-            Controls.Add(titleLabel);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
-            Name = "Form1";
-            StartPosition = FormStartPosition.CenterScreen;
-            Text = "Caro Online - Login";
-            Load += Form1_Load;
-            ((System.ComponentModel.ISupportInitialize)_portInput).EndInit();
+            BackColor = Color.Linen;
+            ClientSize = new Size(615, 326);
+            Controls.Add(pictureBox1);
+            Controls.Add(label2);
+            Controls.Add(btnLogin);
+            Controls.Add(txtUsername);
+            Controls.Add(label1);
+            Name = "LoginForm";
+            Text = "LoginForm";
+            Load += LoginForm_Load;
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private Label titleLabel;
-        private Label hostLabel;
-        private TextBox _hostTextBox;
-        private NumericUpDown _portInput;
-        private Label nameLabel;
-        private TextBox _nameTextBox;
-        private Button _loginButton;
-        private Label _statusLabel;
+        private Label label1;
+        private TextBox txtUsername;
+        private Button btnLogin;
+        private Label label2;
+        private PictureBox pictureBox1;
     }
 }

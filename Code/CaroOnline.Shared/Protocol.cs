@@ -12,6 +12,8 @@ namespace CaroOnline.Shared
         PLACE_STONE,    // đặt quân tại (row, col)
         REMATCH,        // xin đánh lại
         GET_ROOM_LIST,  // client xin danh sách phòng hiện có
+        GET_LEADERBOARD, // xin dữ liệu bảng xếp hạng
+        LEADERBOARD_DATA, // dữ liệu bảng xếp hạng gửi về
 
         // Server → Client
         LOGIN_OK,       // đăng nhập thành công, trả về PlayerId

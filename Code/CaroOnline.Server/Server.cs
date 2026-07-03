@@ -172,6 +172,30 @@ namespace CaroOnline.Server
                     });
                     break;
 
+                case MessageType.GET_LEADERBOARD:
+                    try
+                    {
+                        System.Data.DataTable dt = db.GetTopPlayers(5); // Lấy top 5 người xuất sắc nhất
+
+                        System.Collections.Generic.List<string> playerRows = new System.Collections.Generic.List<string>();
+                        foreach (System.Data.DataRow row in dt.Rows)
+                        {
+                            playerRows.Add($"{row["Username"]},{row["Wins"]}");
+                        }
+                        string stringDataBXH = string.Join("|", playerRows);
+
+                        Send(stream, new Message
+                        {
+                            Type = MessageType.LEADERBOARD_DATA,
+                            Message2 = stringDataBXH
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("[SERVER ERROR] Lỗi khi xử lý BXH: " + ex.Message);
+                    }
+                    break;
+
                 default:
                     Send(stream, new Message
                     {
