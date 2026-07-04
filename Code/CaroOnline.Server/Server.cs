@@ -22,6 +22,8 @@ namespace CaroOnline.Server
 
         public void Start()
         {
+            DatabaseManager.Initialize();
+
             listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
 
@@ -104,11 +106,14 @@ namespace CaroOnline.Server
                 sessions[stream] = (playerId, playerName);
                 roomManager.RegisgerClient(playerId, stream);
 
+                int recordFromDB = DatabaseManager.GetBestRecord(playerName);
+
                 Message response = new Message
                 {
                     Type = MessageType.LOGIN_OK,
                     PlayerName = playerName,
-                    PlayerId = playerId
+                    PlayerId = playerId,
+                    BestRecord = recordFromDB
                 };
 
                 Send(stream, response);
@@ -154,6 +159,26 @@ namespace CaroOnline.Server
                     {
                         Type = MessageType.ROOM_LIST,
                         Rooms = roomManager.GetRoomList()
+                    });
+                    break;
+
+                case MessageType.GET_HISTORY:
+                    List<string> matchHistory = DatabaseManager.GetHistory(pname);
+
+                    Send(stream, new Message
+                    {
+                        Type = MessageType.GET_HISTORY,
+                        HistoryList = matchHistory
+                    });
+                    break;
+
+                case MessageType.GET_LEADERBOARD:
+                    List<string> topPlayers = DatabaseManager.GetLeaderboard();
+
+                    Send(stream, new CaroOnline.Shared.Message
+                    {
+                        Type = MessageType.RESPONSE_LEADERBOARD,
+                        HistoryList = topPlayers // Hoặc gán vào thuộc tính danh sách nào tương tự trong class Message của ông
                     });
                     break;
 

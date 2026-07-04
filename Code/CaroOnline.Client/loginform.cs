@@ -21,8 +21,8 @@ namespace CaroOnline.Client
         private async void LoginButton_Click(object? sender, EventArgs e)
         {
             string host = _hostTextBox.Text.Trim();
-            string playerName = _nameTextBox.Text.Trim();
-            int port = (int)_portInput.Value;
+            string playerName = txtUsername.Text.Trim();
+            int port = 9999;
 
             if (string.IsNullOrWhiteSpace(host))
             {
@@ -53,6 +53,8 @@ namespace CaroOnline.Client
                     string loggedInPlayerId = response.PlayerId ?? "";
                     string loggedInPlayerName = response.PlayerName ?? playerName;
 
+                    _connection.Send(new SharedMessage { Type = MessageType.GET_LEADERBOARD });
+
                     LobbyForm lobbyForm = new LobbyForm(_connection, loggedInPlayerId, loggedInPlayerName);
                     lobbyForm.FormClosed += (_, _) => Close();
                     lobbyForm.Show();
@@ -82,6 +84,41 @@ namespace CaroOnline.Client
         }
 
         private void Form1_Load(object sender, EventArgs e)
+        {
+            _connection.MessageReceived += (message) =>
+            {
+                // Kiểm tra xem có đúng là gói tin Bảng Xếp Hạng không
+                if (message.Type == MessageType.RESPONSE_LEADERBOARD)
+                {
+                    if (this.IsHandleCreated)
+                    {
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            dgvLeaderboard.Rows.Clear(); // Xóa trắng dòng cũ
+
+                            if (message.HistoryList != null)
+                            {
+                                foreach (var item in message.HistoryList)
+                                {
+                                    string[] parts = item.Split('|');
+                                    if (parts.Length == 3)
+                                    {
+                                        dgvLeaderboard.Rows.Add(parts[0], parts[1], parts[2]);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            };
+        }
+
+        private void panelRight_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }

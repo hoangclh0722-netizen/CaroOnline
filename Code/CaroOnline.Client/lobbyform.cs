@@ -136,6 +136,27 @@ namespace CaroOnline.Client
                 case MessageType.ERROR:
                     SetStatus(message.Message2 ?? "Server bao loi.");
                     break;
+
+                case MessageType.GET_HISTORY:
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        if (message.HistoryList != null)
+                        {
+                            listBoxHistory.Items.Clear();
+
+                            foreach (string match in message.HistoryList)
+                            {
+                                listBoxHistory.Items.Add(match);
+                            }
+
+                            MessageBox.Show("Đã cập nhật lịch sử đấu mới nhất!", "Thông báo");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Bạn chưa tham gia trận đấu nào hoặc không có lịch sử!", "Thông báo");
+                        }
+                    });
+                    break;
             }
         }
 
@@ -195,7 +216,10 @@ namespace CaroOnline.Client
             GameForm gameForm = new GameForm(
                 _connection,
                 message.RoomId ?? "",
-                message.Symbol ?? "");
+                message.Symbol ?? "",
+                _playerName
+             );
+
             gameForm.FormClosed += (_, _) => Close();
             gameForm.Show();
 
@@ -212,6 +236,35 @@ namespace CaroOnline.Client
             _connection.MessageReceived -= Connection_MessageReceived;
             _connection.ConnectionError -= Connection_ConnectionError;
             _connection.Disconnected -= Connection_Disconnected;
+        }
+        private void leaveRoomButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _connection.Send(new SharedMessage
+                {
+                    Type = MessageType.LEAVE_ROOM
+                });
+
+                leaveRoomButton.Enabled = false;
+                createRoomButton.Enabled = true;
+                joinRoomButton.Enabled = false;
+
+
+                RequestRoomList();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Không thể rời phòng: " + ex.Message, "Lỗi");
+            }
+        }
+
+        private void btnViewHistory_Click(object sender, EventArgs e)
+        {
+            _connection.Send(new CaroOnline.Shared.Message
+            {
+                Type = MessageType.GET_HISTORY
+            });
         }
     }
 }

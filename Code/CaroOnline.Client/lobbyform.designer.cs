@@ -18,169 +18,224 @@ namespace CaroOnline.Client
 
         private void InitializeComponent()
         {
-            titleLabel = new Label();
-            playerNameLabel = new Label();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            label1 = new Label();
+            label3 = new Label();
             playerNameValueLabel = new Label();
-            playerIdLabel = new Label();
             playerIdValueLabel = new Label();
+            label5 = new Label();
             roomsGrid = new DataGridView();
-            roomIdColumn = new DataGridViewTextBoxColumn();
-            hostNameColumn = new DataGridViewTextBoxColumn();
-            statusColumn = new DataGridViewTextBoxColumn();
+            Column1 = new DataGridViewTextBoxColumn();
+            Column2 = new DataGridViewTextBoxColumn();
+            Column3 = new DataGridViewTextBoxColumn();
             createRoomButton = new Button();
-            refreshButton = new Button();
             joinRoomButton = new Button();
+            btnLamMoi = new Button();
             statusLabel = new Label();
+            leaveRoomButton = new Button();
+            btnViewHistory = new Button();
+            listBoxHistory = new ListBox();
             ((System.ComponentModel.ISupportInitialize)roomsGrid).BeginInit();
             SuspendLayout();
             // 
-            // titleLabel
+            // label1
             // 
-            titleLabel.AutoSize = true;
-            titleLabel.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-            titleLabel.Location = new Point(24, 20);
-            titleLabel.Name = "titleLabel";
-            titleLabel.Size = new Size(181, 41);
-            titleLabel.TabIndex = 0;
-            titleLabel.Text = "Phong cho";
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label1.ForeColor = Color.DarkSlateGray;
+            label1.Location = new Point(91, 39);
+            label1.Name = "label1";
+            label1.Size = new Size(252, 50);
+            label1.TabIndex = 0;
+            label1.Text = "Caro - Online";
             // 
-            // playerNameLabel
+            // label3
             // 
-            playerNameLabel.AutoSize = true;
-            playerNameLabel.Location = new Point(28, 76);
-            playerNameLabel.Name = "playerNameLabel";
-            playerNameLabel.Size = new Size(75, 20);
-            playerNameLabel.TabIndex = 1;
-            playerNameLabel.Text = "Nguoi choi:";
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label3.ForeColor = Color.Gray;
+            label3.Location = new Point(157, 100);
+            label3.Name = "label3";
+            label3.Size = new Size(97, 38);
+            label3.TabIndex = 2;
+            label3.Text = "Lobby";
             // 
             // playerNameValueLabel
             // 
             playerNameValueLabel.AutoSize = true;
-            playerNameValueLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            playerNameValueLabel.Location = new Point(115, 76);
+            playerNameValueLabel.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            playerNameValueLabel.Location = new Point(46, 176);
             playerNameValueLabel.Name = "playerNameValueLabel";
-            playerNameValueLabel.Size = new Size(15, 20);
-            playerNameValueLabel.TabIndex = 2;
-            playerNameValueLabel.Text = "-";
-            // 
-            // playerIdLabel
-            // 
-            playerIdLabel.AutoSize = true;
-            playerIdLabel.Location = new Point(28, 104);
-            playerIdLabel.Name = "playerIdLabel";
-            playerIdLabel.Size = new Size(68, 20);
-            playerIdLabel.TabIndex = 3;
-            playerIdLabel.Text = "Player ID:";
+            playerNameValueLabel.Size = new Size(134, 23);
+            playerNameValueLabel.TabIndex = 3;
+            playerNameValueLabel.Text = "Tên người chơi:";
             // 
             // playerIdValueLabel
             // 
             playerIdValueLabel.AutoSize = true;
-            playerIdValueLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            playerIdValueLabel.Location = new Point(115, 104);
+            playerIdValueLabel.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            playerIdValueLabel.Location = new Point(46, 231);
             playerIdValueLabel.Name = "playerIdValueLabel";
-            playerIdValueLabel.Size = new Size(15, 20);
+            playerIdValueLabel.Size = new Size(33, 23);
             playerIdValueLabel.TabIndex = 4;
-            playerIdValueLabel.Text = "-";
+            playerIdValueLabel.Text = "ID:";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label5.Location = new Point(481, 46);
+            label5.Name = "label5";
+            label5.Size = new Size(396, 41);
+            label5.TabIndex = 5;
+            label5.Text = "DANH SÁCH PHÒNG CHƠI";
             // 
             // roomsGrid
             // 
-            roomsGrid.AllowUserToAddRows = false;
-            roomsGrid.AllowUserToDeleteRows = false;
-            roomsGrid.AllowUserToResizeRows = false;
-            roomsGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             roomsGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            roomsGrid.BackgroundColor = SystemColors.Window;
+            roomsGrid.BackgroundColor = Color.White;
+            roomsGrid.BorderStyle = BorderStyle.None;
             roomsGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            roomsGrid.Columns.AddRange(new DataGridViewColumn[] { roomIdColumn, hostNameColumn, statusColumn });
-            roomsGrid.Location = new Point(28, 144);
-            roomsGrid.MultiSelect = false;
+            roomsGrid.Columns.AddRange(new DataGridViewColumn[] { Column1, Column2, Column3 });
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = SystemColors.Window;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+            roomsGrid.DefaultCellStyle = dataGridViewCellStyle1;
+            roomsGrid.Location = new Point(468, 100);
             roomsGrid.Name = "roomsGrid";
-            roomsGrid.ReadOnly = true;
             roomsGrid.RowHeadersVisible = false;
             roomsGrid.RowHeadersWidth = 51;
             roomsGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            roomsGrid.Size = new Size(594, 274);
-            roomsGrid.TabIndex = 5;
-            roomsGrid.CellDoubleClick += roomsGrid_CellDoubleClick;
+            roomsGrid.Size = new Size(419, 321);
+            roomsGrid.TabIndex = 6;
             // 
-            // roomIdColumn
+            // Column1
             // 
-            roomIdColumn.HeaderText = "Ma phong";
-            roomIdColumn.MinimumWidth = 6;
-            roomIdColumn.Name = "roomIdColumn";
-            roomIdColumn.ReadOnly = true;
+            Column1.HeaderText = "Tên Phòng";
+            Column1.MinimumWidth = 6;
+            Column1.Name = "Column1";
             // 
-            // hostNameColumn
+            // Column2
             // 
-            hostNameColumn.HeaderText = "Chu phong";
-            hostNameColumn.MinimumWidth = 6;
-            hostNameColumn.Name = "hostNameColumn";
-            hostNameColumn.ReadOnly = true;
+            Column2.HeaderText = "Chủ Phòng";
+            Column2.MinimumWidth = 6;
+            Column2.Name = "Column2";
             // 
-            // statusColumn
+            // Column3
             // 
-            statusColumn.HeaderText = "Trang thai";
-            statusColumn.MinimumWidth = 6;
-            statusColumn.Name = "statusColumn";
-            statusColumn.ReadOnly = true;
+            Column3.HeaderText = "Trạng thái";
+            Column3.MinimumWidth = 6;
+            Column3.Name = "Column3";
             // 
             // createRoomButton
             // 
-            createRoomButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            createRoomButton.Location = new Point(646, 144);
+            createRoomButton.BackColor = Color.DarkTurquoise;
+            createRoomButton.FlatAppearance.BorderSize = 0;
+            createRoomButton.FlatAppearance.MouseOverBackColor = Color.LightCyan;
+            createRoomButton.FlatStyle = FlatStyle.Flat;
+            createRoomButton.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            createRoomButton.ForeColor = Color.White;
+            createRoomButton.Location = new Point(240, 214);
             createRoomButton.Name = "createRoomButton";
-            createRoomButton.Size = new Size(126, 34);
-            createRoomButton.TabIndex = 6;
-            createRoomButton.Text = "Tao phong";
-            createRoomButton.UseVisualStyleBackColor = true;
+            createRoomButton.Size = new Size(137, 40);
+            createRoomButton.TabIndex = 7;
+            createRoomButton.Text = "Tạo Phòng";
+            createRoomButton.UseVisualStyleBackColor = false;
             createRoomButton.Click += createRoomButton_Click;
-            // 
-            // refreshButton
-            // 
-            refreshButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            refreshButton.Location = new Point(646, 190);
-            refreshButton.Name = "refreshButton";
-            refreshButton.Size = new Size(126, 34);
-            refreshButton.TabIndex = 7;
-            refreshButton.Text = "Lam moi";
-            refreshButton.UseVisualStyleBackColor = true;
-            refreshButton.Click += refreshButton_Click;
             // 
             // joinRoomButton
             // 
-            joinRoomButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            joinRoomButton.Location = new Point(646, 236);
+            joinRoomButton.BackColor = Color.DarkTurquoise;
+            joinRoomButton.FlatAppearance.BorderSize = 0;
+            joinRoomButton.FlatAppearance.MouseOverBackColor = Color.LightCyan;
+            joinRoomButton.FlatStyle = FlatStyle.Flat;
+            joinRoomButton.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            joinRoomButton.ForeColor = Color.White;
+            joinRoomButton.Location = new Point(240, 293);
             joinRoomButton.Name = "joinRoomButton";
-            joinRoomButton.Size = new Size(126, 34);
+            joinRoomButton.Size = new Size(137, 40);
             joinRoomButton.TabIndex = 8;
-            joinRoomButton.Text = "Vao phong";
-            joinRoomButton.UseVisualStyleBackColor = true;
+            joinRoomButton.Text = "Vào Phòng";
+            joinRoomButton.UseVisualStyleBackColor = false;
             joinRoomButton.Click += joinRoomButton_Click;
+            // 
+            // btnLamMoi
+            // 
+            btnLamMoi.FlatAppearance.MouseOverBackColor = Color.Silver;
+            btnLamMoi.Location = new Point(893, 100);
+            btnLamMoi.Name = "btnLamMoi";
+            btnLamMoi.Size = new Size(102, 32);
+            btnLamMoi.TabIndex = 9;
+            btnLamMoi.Text = "Làm Mới";
+            btnLamMoi.UseVisualStyleBackColor = true;
+            btnLamMoi.Click += refreshButton_Click;
             // 
             // statusLabel
             // 
-            statusLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            statusLabel.Location = new Point(28, 434);
+            statusLabel.AutoSize = true;
+            statusLabel.Location = new Point(46, 401);
             statusLabel.Name = "statusLabel";
-            statusLabel.Size = new Size(744, 30);
-            statusLabel.TabIndex = 9;
-            statusLabel.Text = "San sang.";
+            statusLabel.Size = new Size(68, 20);
+            statusLabel.TabIndex = 10;
+            statusLabel.Text = "Sẵn sàng";
+            // 
+            // leaveRoomButton
+            // 
+            leaveRoomButton.BackColor = Color.DarkTurquoise;
+            leaveRoomButton.FlatAppearance.BorderSize = 0;
+            leaveRoomButton.FlatAppearance.MouseOverBackColor = Color.LightCyan;
+            leaveRoomButton.FlatStyle = FlatStyle.Flat;
+            leaveRoomButton.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            leaveRoomButton.ForeColor = Color.White;
+            leaveRoomButton.Location = new Point(240, 369);
+            leaveRoomButton.Name = "leaveRoomButton";
+            leaveRoomButton.Size = new Size(137, 40);
+            leaveRoomButton.TabIndex = 11;
+            leaveRoomButton.Text = "Rời Phòng";
+            leaveRoomButton.UseVisualStyleBackColor = false;
+            leaveRoomButton.Click += leaveRoomButton_Click;
+            // 
+            // btnViewHistory
+            // 
+            btnViewHistory.Location = new Point(1035, 100);
+            btnViewHistory.Name = "btnViewHistory";
+            btnViewHistory.Size = new Size(177, 50);
+            btnViewHistory.TabIndex = 12;
+            btnViewHistory.Text = "Xem Lịch Sử Đấu";
+            btnViewHistory.UseVisualStyleBackColor = true;
+            btnViewHistory.Click += btnViewHistory_Click;
+            // 
+            // listBoxHistory
+            // 
+            listBoxHistory.FormattingEnabled = true;
+            listBoxHistory.Location = new Point(1035, 156);
+            listBoxHistory.Name = "listBoxHistory";
+            listBoxHistory.Size = new Size(177, 244);
+            listBoxHistory.TabIndex = 13;
             // 
             // LobbyForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(804, 483);
+            BackColor = Color.Ivory;
+            ClientSize = new Size(1283, 483);
+            Controls.Add(listBoxHistory);
+            Controls.Add(btnViewHistory);
+            Controls.Add(leaveRoomButton);
             Controls.Add(statusLabel);
+            Controls.Add(btnLamMoi);
             Controls.Add(joinRoomButton);
-            Controls.Add(refreshButton);
             Controls.Add(createRoomButton);
             Controls.Add(roomsGrid);
+            Controls.Add(label5);
             Controls.Add(playerIdValueLabel);
-            Controls.Add(playerIdLabel);
             Controls.Add(playerNameValueLabel);
-            Controls.Add(playerNameLabel);
-            Controls.Add(titleLabel);
+            Controls.Add(label3);
+            Controls.Add(label1);
             MinimumSize = new Size(720, 430);
             Name = "LobbyForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -192,18 +247,21 @@ namespace CaroOnline.Client
 
         #endregion
 
-        private Label titleLabel;
-        private Label playerNameLabel;
+        private Label label1;
+        private Label label3;
         private Label playerNameValueLabel;
-        private Label playerIdLabel;
         private Label playerIdValueLabel;
+        private Label label5;
         private DataGridView roomsGrid;
-        private DataGridViewTextBoxColumn roomIdColumn;
-        private DataGridViewTextBoxColumn hostNameColumn;
-        private DataGridViewTextBoxColumn statusColumn;
+        private DataGridViewTextBoxColumn Column1;
+        private DataGridViewTextBoxColumn Column2;
+        private DataGridViewTextBoxColumn Column3;
         private Button createRoomButton;
-        private Button refreshButton;
         private Button joinRoomButton;
+        private Button btnLamMoi;
         private Label statusLabel;
+        private Button leaveRoomButton;
+        private Button btnViewHistory;
+        private ListBox listBoxHistory;
     }
 }
