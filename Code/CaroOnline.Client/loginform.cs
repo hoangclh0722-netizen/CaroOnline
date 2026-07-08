@@ -1,75 +1,126 @@
-﻿using System;
-using System.Windows.Forms;
 using CaroOnline.Shared;
+using SharedMessage = CaroOnline.Shared.Message;
 
 namespace CaroOnline.Client
 {
-    public partial class LoginForm : Form
+    public partial class Form1 : Form
     {
-        private ClientConnection _connection = new ClientConnection();
+        private readonly ClientConnection _connection = new();
 
-        public LoginForm()
+        public Form1()
         {
             InitializeComponent();
         }
 
-        // TỰ ĐỘNG KẾT NỐI KHI FORM VỪA MỞ LÊN
-        private void LoginForm_Load(object sender, EventArgs e)
+        protected override void OnFormClosed(FormClosedEventArgs e)
         {
-            try
-            {
-                _connection.Connect("127.0.0.1", 9999);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Không thể kết nối đến Server! Vui lòng bật Server lên trước.\n" + ex.Message,
-                                "Lỗi kết nối", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            _connection.Dispose();
+            base.OnFormClosed(e);
         }
 
-        // XỬ LÝ SỰ KIỆN KHI BẤM NÚT ĐĂNG NHẬP
-        private void btnLogin_Click(object sender, EventArgs e)
+        private async void LoginButton_Click(object? sender, EventArgs e)
         {
-            string username = txtUsername.Text.Trim();
+            string host = _hostTextBox.Text.Trim();
+            string playerName = txtUsername.Text.Trim();
+            int port = 9999;
 
-            string password = "";
-
-            if (string.IsNullOrEmpty(username))
+            if (string.IsNullOrWhiteSpace(host))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ tài khoản người chơi!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                SetStatus("Vui long nhap dia chi server.");
                 return;
             }
 
-            if (!_connection.IsConnected)
+            if (string.IsNullOrWhiteSpace(playerName))
             {
-                MessageBox.Show("Chưa kết nối được với Server!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SetStatus("Vui long nhap ten choi.");
                 return;
             }
+
+            _loginButton.Enabled = false;
+            SetStatus("Dang ket noi...");
 
             try
             {
-                var response = _connection.Login(username, password);
+                SharedMessage response = await Task.Run(() =>
+                {
+                    _connection.Connect(host, port);
+                    return _connection.Login(playerName);
+                });
 
                 if (response.Type == MessageType.LOGIN_OK)
                 {
+                    _connection.StartListening();
+                    string loggedInPlayerId = response.PlayerId ?? "";
+                    string loggedInPlayerName = response.PlayerName ?? playerName;
+
+                    _connection.Send(new SharedMessage { Type = MessageType.GET_LEADERBOARD });
+
+                    LobbyForm lobbyForm = new LobbyForm(_connection, loggedInPlayerId, loggedInPlayerName);
+                    lobbyForm.FormClosed += (_, _) => Close();
+                    lobbyForm.Show();
+
                     this.Hide();
 
-                    // MỞ SẢNH CHỜ VÀ BÀN GIAO "CỤC MẠNG" CHO LOBBYFORM
-                    LobbyForm lobby = new LobbyForm(_connection, username);
-                    lobby.ShowDialog();
+                    return;
+                }
 
-                    this.Close();
-                }
-                else
-                {
-                    // Hiển thị lý do lỗi chi tiết từ Server trả về (Ví dụ: Sai mật khẩu)
-                    MessageBox.Show(response.Message2 ?? "Đăng nhập thất bại từ phía Server!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                SetStatus(response.Message2 ?? "Server tra ve phan hoi khong hop le.");
+                _connection.Disconnect();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi truyền tải mạng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SetStatus("Khong ket noi duoc server: " + ex.Message);
+                _connection.Disconnect();
             }
+            finally
+            {
+                _loginButton.Enabled = true;
+            }
+        }
+
+        private void SetStatus(string text)
+        {
+            _statusLabel.Text = text;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            _connection.MessageReceived += (message) =>
+            {
+                // Kiểm tra xem có đúng là gói tin Bảng Xếp Hạng không
+                if (message.Type == MessageType.RESPONSE_LEADERBOARD)
+                {
+                    if (this.IsHandleCreated)
+                    {
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            dgvLeaderboard.Rows.Clear(); // Xóa trắng dòng cũ
+
+                            if (message.HistoryList != null)
+                            {
+                                foreach (var item in message.HistoryList)
+                                {
+                                    string[] parts = item.Split('|');
+                                    if (parts.Length == 3)
+                                    {
+                                        dgvLeaderboard.Rows.Add(parts[0], parts[1], parts[2]);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            };
+        }
+
+        private void panelRight_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

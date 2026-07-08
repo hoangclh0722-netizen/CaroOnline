@@ -16,12 +16,12 @@ namespace CaroOnline.Client
         {
             InitializeComponent();
 
-
             _boardUI = new BoardUI(panelBoard);
             _boardUI.SetInputEnabled(false);
+
         }
 
-        public GameForm(ClientConnection connection, string roomId, string mySymbol) : this()
+        public GameForm(ClientConnection connection, string roomId, string mySymbol, string playerName) : this()
         {
             _connection = connection;
             _roomId = roomId;
@@ -36,6 +36,10 @@ namespace CaroOnline.Client
             _connection.Disconnected += Connection_Disconnected;
 
             SetMyTurn(_mySymbol == "X");
+
+            lblMyName.Text = playerName;
+            lblMyBestRecord.Text = $"(Kỷ lục: {_myBestRecord})";
+            lblEnemyBestRecord.Text = "(Kỷ lục: 0)";
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
@@ -118,8 +122,19 @@ namespace CaroOnline.Client
         {
             switch (message.Type)
             {
+                case MessageType.GAME_START:
+                    if (message.PlayerName != null)
+                    {
+                        lblEnemyName.Text = message.PlayerName;
+                    }
+                    break;
+
                 case MessageType.STONE_PLACED:
                     HandleStonePlaced(message);
+                    if (message.PlayerName != null && message.PlayerName != lblMyName.Text)
+                    {
+                        lblEnemyName.Text = message.PlayerName;
+                    }
                     break;
 
                 case MessageType.TIMER_TICK:
@@ -129,6 +144,26 @@ namespace CaroOnline.Client
                 case MessageType.GAME_OVER:
                     _boardUI.SetInputEnabled(false);
                     SetStatus("Ket thuc. Nguoi thang: " + (message.Winner ?? "-"));
+                    if (message.Winner == _mySymbol) 
+                    {
+                        _myCurrentStreak++; 
+                        if (_myCurrentStreak > _myBestRecord)
+                        {
+                            _myBestRecord = _myCurrentStreak; 
+                        }
+                        MessageBox.Show($"Chúc mừng bạn đã chiến thắng! Chuỗi thắng hiện tại: {_myCurrentStreak}", "Thắng trận");
+                    }
+                    else if (message.Winner == "DRAW") 
+                    {
+                        MessageBox.Show("Trận đấu hòa!", "Kết quả");
+                    }
+                    else 
+                    {
+                        _myCurrentStreak = 0; 
+                        MessageBox.Show("Rất tiếc bạn đã thất bại! Chuỗi thắng bị ngắt.", "Thua trận");
+                    }
+
+                    lblMyBestRecord.Text = $"(Kỷ lục: {_myBestRecord})";
                     break;
 
                 case MessageType.OPPONENT_LEFT:
@@ -175,24 +210,9 @@ namespace CaroOnline.Client
                 SetStatus("Khong gui duoc toi server: " + ex.Message);
                 _boardUI.SetInputEnabled(_isMyTurn);
             }
-
             //_boardUI = new BoardUI(panel1);
-
         }
-
-        private void GameForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel3_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
+        private static int _myBestRecord = 0;
+        private static int _myCurrentStreak = 0;
     }
 }

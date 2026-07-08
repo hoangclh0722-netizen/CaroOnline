@@ -12,8 +12,9 @@ namespace CaroOnline.Shared
         PLACE_STONE,    // đặt quân tại (row, col)
         REMATCH,        // xin đánh lại
         GET_ROOM_LIST,  // client xin danh sách phòng hiện có
-        GET_LEADERBOARD, // xin dữ liệu bảng xếp hạng
-        LEADERBOARD_DATA, // dữ liệu bảng xếp hạng gửi về
+        GET_HISTORY, // Client xin lịch sử đấu, Server trả về danh sách lịch sử
+        GET_LEADERBOARD,
+        RESPONSE_LEADERBOARD,
 
         // Server → Client
         LOGIN_OK,       // đăng nhập thành công, trả về PlayerId
@@ -60,6 +61,10 @@ namespace CaroOnline.Shared
 
         // Dùng cho: ROOM_LIST
         public List<RoomInfo>? Rooms { get; set; }
+
+        public int BestRecord { get; set; }
+
+        public List<string>? HistoryList { get; set; }
     }
 
     // Thông tin 1 phòng — dùng trong danh sách phòng

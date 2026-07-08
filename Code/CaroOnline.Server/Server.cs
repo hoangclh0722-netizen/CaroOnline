@@ -14,7 +14,6 @@ namespace CaroOnline.Server
 
         private readonly RoomManager roomManager = new();
         private readonly ConcurrentDictionary<NetworkStream, (string PlayerId, string PlayerName)> sessions = new();
-        private readonly DatabaseManager db = new();
 
         public Server(int port)
         {
@@ -23,6 +22,8 @@ namespace CaroOnline.Server
 
         public void Start()
         {
+            DatabaseManager.Initialize();
+
             listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
 
@@ -86,7 +87,7 @@ namespace CaroOnline.Server
 
         private void ProcessMessage(NetworkStream stream, Message message)
         {
-            // LOGIN kiểm tra Tên người chơi
+            // LOGIN xu ly truoc, chua can session
             if (message.Type == MessageType.LOGIN)
             {
                 if (string.IsNullOrWhiteSpace(message.PlayerName))
@@ -100,26 +101,27 @@ namespace CaroOnline.Server
                 }
 
                 string playerName = message.PlayerName.Trim();
-
-                // 🚀 CẬP NHẬT: Cho đăng nhập luôn mà không thèm check pass nữa!
                 string playerId = Guid.NewGuid().ToString("N").Substring(0, 8);
 
                 sessions[stream] = (playerId, playerName);
                 roomManager.RegisgerClient(playerId, stream);
+
+                int recordFromDB = DatabaseManager.GetBestRecord(playerName);
 
                 Message response = new Message
                 {
                     Type = MessageType.LOGIN_OK,
                     PlayerName = playerName,
                     PlayerId = playerId,
-                    Message2 = "Đăng nhập thành công!"
+                    BestRecord = recordFromDB
                 };
 
                 Send(stream, response);
-                Console.WriteLine("Login SUCCESS (No Pass): " + playerName + " - " + playerId);
 
+                Console.WriteLine("Login OK: " + playerName + " - " + playerId);
                 return;
             }
+
             // Cac message khac can da login
             if (!sessions.TryGetValue(stream, out var sessionInfo))
             {
@@ -138,22 +140,10 @@ namespace CaroOnline.Server
             {
                 case MessageType.CREATE_ROOM:
                     roomManager.CreateRoom(pid, pname, stream);
-                    Send(stream, new Message
-                    {
-                        Type = MessageType.ROOM_CREATED,
-                        RoomId = pid 
-                    });
-                    Console.WriteLine($"[SERVER] {pname} đã tạo phòng thành công.");
-                    break;               
+                    break;
 
                 case MessageType.JOIN_ROOM:
                     roomManager.JoinRoom(message.RoomId!, pid, pname, stream);
-                    Send(stream, new Message
-                    {
-                        Type = MessageType.ROOM_JOINED,
-                        RoomId = message.RoomId
-                    });
-                    Console.WriteLine($"[SERVER] {pname} đã vào phòng {message.RoomId}.");
                     break;
 
                 case MessageType.LEAVE_ROOM:
@@ -172,28 +162,24 @@ namespace CaroOnline.Server
                     });
                     break;
 
+                case MessageType.GET_HISTORY:
+                    List<string> matchHistory = DatabaseManager.GetHistory(pname);
+
+                    Send(stream, new Message
+                    {
+                        Type = MessageType.GET_HISTORY,
+                        HistoryList = matchHistory
+                    });
+                    break;
+
                 case MessageType.GET_LEADERBOARD:
-                    try
-                    {
-                        System.Data.DataTable dt = db.GetTopPlayers(5); // Lấy top 5 người xuất sắc nhất
+                    List<string> topPlayers = DatabaseManager.GetLeaderboard();
 
-                        System.Collections.Generic.List<string> playerRows = new System.Collections.Generic.List<string>();
-                        foreach (System.Data.DataRow row in dt.Rows)
-                        {
-                            playerRows.Add($"{row["Username"]},{row["Wins"]}");
-                        }
-                        string stringDataBXH = string.Join("|", playerRows);
-
-                        Send(stream, new Message
-                        {
-                            Type = MessageType.LEADERBOARD_DATA,
-                            Message2 = stringDataBXH
-                        });
-                    }
-                    catch (Exception ex)
+                    Send(stream, new CaroOnline.Shared.Message
                     {
-                        Console.WriteLine("[SERVER ERROR] Lỗi khi xử lý BXH: " + ex.Message);
-                    }
+                        Type = MessageType.RESPONSE_LEADERBOARD,
+                        HistoryList = topPlayers // Hoặc gán vào thuộc tính danh sách nào tương tự trong class Message của ông
+                    });
                     break;
 
                 default:

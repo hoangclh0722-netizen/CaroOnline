@@ -26,7 +26,6 @@ namespace CaroOnline.Server
         private NetworkStream? guestStream;
         private bool isGameOver;
         private int moveCount;
-        private readonly DatabaseManager db = new DatabaseManager();
 
         private readonly TurnTimerManager turnTimerManager = new();
         private string? currentTurnPlayerId;
@@ -136,6 +135,7 @@ namespace CaroOnline.Server
 
                     Console.WriteLine($"[Room {RoomId}] {playerId} dat tai ({row},{col})");
 
+                    // 1. TRƯỜNG HỢP CÓ NGƯỜI THẮNG
                     if (HasFiveInRow(row, col, stone))
                     {
                         isGameOver = true;
@@ -145,9 +145,27 @@ namespace CaroOnline.Server
                             Winner = symbol,
                             Message2 = symbol + " thang."
                         };
-                        string winnerName = symbol == "X" ? HostName : (guestName ?? "Guest");
-                        db.SaveMatchResult(HostName, guestName ?? "Guest", winnerName);
+
+                        try
+                        {
+                            string p1 = HostName;
+                            string p2 = guestName ?? "Guest";
+
+                            // Lưu vào SQLite lịch sử trận đấu
+                            DatabaseManager.SaveMatch(p1, p2, symbol);
+
+                            // Cập nhật kỷ lục chuỗi thắng
+                            if (symbol == "X")
+                                DatabaseManager.UpdateBestRecord(p1, 1);
+                            else if (symbol == "O")
+                                DatabaseManager.UpdateBestRecord(p2, 1);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Loi luu DB khi co nguoi thang: " + ex.Message);
+                        }
                     }
+                    // 2. TRƯỜNG HỢP TRẬN ĐẤU HÒA (HẾT Ô ĐỂ ĐÁNH)
                     else if (moveCount >= Rows * Cols)
                     {
                         isGameOver = true;
@@ -157,8 +175,21 @@ namespace CaroOnline.Server
                             Winner = "DRAW",
                             Message2 = "Hoa."
                         };
-                        db.SaveMatchResult(HostName, guestName ?? "Guest", "Hòa");
+
+                        try
+                        {
+                            string p1 = HostName;
+                            string p2 = guestName ?? "Guest";
+
+                            // Lưu vào SQLite kết quả Hòa
+                            DatabaseManager.SaveMatch(p1, p2, "DRAW");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Loi luu DB khi hoa: " + ex.Message);
+                        }
                     }
+                    // 3. CHƯA KẾT THÚC VÁN -> ĐỔI LƯỢT ĐÁNH
                     else
                     {
                         SwitchTurn();
@@ -174,7 +205,6 @@ namespace CaroOnline.Server
                 {
                     Send(senderStream, error);
                 }
-
                 return;
             }
 
@@ -256,8 +286,6 @@ namespace CaroOnline.Server
                     }
 
                     StopTurnTimer();
-                    string winnerName = winnerSymbol == "X" ? HostName : (guestName ?? "Guest");
-                    db.SaveMatchResult(HostName, guestName ?? "Guest", winnerName);
 
                     Broadcast(new Message
                     {

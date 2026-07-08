@@ -1,0 +1,42 @@
+[33m116f684[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix bug file bi trung lap
+[33m39c26e9[m thêm bảng xếp hạng
+[33m1a7a82d[m UI lobby, login và database SQLite
+[33m9e1b876[m feat: Hoàn thiện UI Login, Lobby và tích hợp Database SQLite (Issue Records & History)
+[33mf0f3637[m Add files via upload
+[33md5c1998[m Add files via upload
+[33m00d7530[m Create keep
+[33mb80f287[m Delete Extra directory
+[33me6dbaf4[m Add files via upload
+[33m9be3391[m Create Proof
+[33maacf330[m Add files via upload
+[33mcdd5d8d[m lobby and online game flow
+[33m2dd06e3[m Update game form for online play
+[33m1a966e0[m Update game form for online play
+[33mf4654aa[m sua lai panel
+[33m57e9161[m Hoan thanh BoardUI va GameForm
+[33mf47b097[m Merge pull request #7 from hoangclh0722-netizen/feature-room-system
+[33ma7b7dff[m Hoàng: finished room-system
+[33m8d4f1b1[m Add files via upload
+[33m82e08ab[m Delete Extra/TestCase.pdf
+[33mc8629f2[m Add files via upload
+[33m1474c3e[m Delete Extra/thanhkhang_TestCase.pdf
+[33mf5d671a[m Add files via upload
+[33m4f12c9c[m delete old test TurnTimeManager
+[33m556686a[m Merge pull request #5 from hoangclh0722-netizen/feature-room-system
+[33m206a184[m fix bug TurnTimerManager, GameRoom and RoomManager
+[33m3e33560[m Merge remote-tracking branch 'origin/main' into Test
+[33m3a0e363[m Untrack .vs folder
+[33m0e5872e[m Add client login and TCP message framing
+[33m45ec2a1[m update project structure
+[33mb9ed9fb[m Hoàng: Thêm GameRoom và sửa lỗi RoomManager
+[33md51aca3[m Hoàng: Add RoomManager: CreateRoom, JoinRoom, LeaveRoom,...
+[33m013735e[m Merge pull request #2 from hoangclh0722-netizen/feature-turn-timer
+[33mae0e34a[m[33m ([m[1;31morigin/feature-turn-timer[m[33m, [m[1;32mfeature-turn-timer[m[33m)[m Vu: Code chuc nang dem gio tran dau game Caro
+[33md9dd33f[m[33m ([m[1;32mmaster[m[33m)[m Add TCP server login handling
+[33m84db0bc[m update structure
+[33mb418ad3[m Restructure project folders
+[33m19615ce[m fix sever
+[33m7e9ac6f[m first commit
+[33m2e55ce1[m[33m ([m[1;31morigin/protocol[m[33m)[m Add project files.
+[33m331ccf9[m Add .gitattributes and .gitignore.
+[33mc600d6b[m Initial commit
