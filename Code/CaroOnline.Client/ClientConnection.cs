@@ -25,13 +25,13 @@ namespace CaroOnline.Client
             _client.Connect(host, port);
             _stream = _client.GetStream();
         }
-        public SharedMessage Login(string playerName, string password)
+
+        public SharedMessage Login(string playerName)
         {
             Send(new SharedMessage
             {
                 Type = MessageType.LOGIN,
-                PlayerName = playerName,
-                Message2 = password 
+                PlayerName = playerName
             });
 
             return MessageHelper.Receive(GetStream())
