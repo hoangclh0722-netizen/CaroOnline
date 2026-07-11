@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using CaroOnline.Shared;
 using SharedMessage = CaroOnline.Shared.Message;
 
@@ -8,152 +5,279 @@ namespace CaroOnline.Client
 {
     public partial class LobbyForm : Form
     {
-        private ClientConnection _connection;
-        private string _username;
+        private readonly ClientConnection _connection;
+        private readonly string _playerId;
+        private readonly string _playerName;
+        private bool _gameOpened;
 
-        public LobbyForm(ClientConnection connection, string username)
+        public LobbyForm(ClientConnection connection, string playerId, string playerName)
         {
+            _connection = connection;
+            _playerId = playerId;
+            _playerName = playerName;
+
             InitializeComponent();
-            this._connection = connection;
-            this._username = username;
+
+            playerNameValueLabel.Text = _playerName;
+            playerIdValueLabel.Text = _playerId;
         }
 
-        private void LobbyForm_Load(object sender, EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            _connection.MessageReceived += OnMessageReceived;
-            _connection.StartListening();
+            base.OnLoad(e);
 
-            YeuCauLayDanhSachPhong();
+            _connection.MessageReceived += Connection_MessageReceived;
+            _connection.ConnectionError += Connection_ConnectionError;
+            _connection.Disconnected += Connection_Disconnected;
+
+            RequestRoomList();
         }
 
-        private void OnMessageReceived(SharedMessage msg)
+        protected override void OnFormClosed(FormClosedEventArgs e)
         {
-            if (this.InvokeRequired)
+            DetachConnectionEvents();
+
+            if (!_gameOpened)
             {
-                this.Invoke(new Action(() => OnMessageReceived(msg)));
+                _connection.Disconnect();
+            }
+
+            base.OnFormClosed(e);
+        }
+
+        private void createRoomButton_Click(object sender, EventArgs e)
+        {
+            SendToServer(new SharedMessage { Type = MessageType.CREATE_ROOM });
+            SetStatus("Dang tao phong...");
+        }
+
+        private void refreshButton_Click(object sender, EventArgs e)
+        {
+            RequestRoomList();
+        }
+
+        private void joinRoomButton_Click(object sender, EventArgs e)
+        {
+            string? roomId = GetSelectedRoomId();
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                SetStatus("Hay chon mot phong truoc.");
                 return;
             }
 
-            switch (msg.Type)
+            SendToServer(new SharedMessage
+            {
+                Type = MessageType.JOIN_ROOM,
+                RoomId = roomId
+            });
+            SetStatus("Dang vao phong " + roomId + "...");
+        }
+
+        private void roomsGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                joinRoomButton.PerformClick();
+            }
+        }
+
+        private void Connection_MessageReceived(SharedMessage message)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            BeginInvoke(() => HandleServerMessage(message));
+        }
+
+        private void Connection_ConnectionError(Exception ex)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            BeginInvoke(() => SetStatus("Mat ket noi server: " + ex.Message));
+        }
+
+        private void Connection_Disconnected()
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            BeginInvoke(() => SetStatus("Da mat ket noi server."));
+        }
+
+        private void HandleServerMessage(SharedMessage message)
+        {
+            switch (message.Type)
             {
                 case MessageType.ROOM_LIST:
-                    CapNhatBangDanhSachPhong(msg.Rooms);
+                    ShowRooms(message.Rooms ?? new List<RoomInfo>());
+                    SetStatus("Da cap nhat danh sach phong.");
                     break;
 
-                // Khi Server báo phòng đã được tạo (ROOM_CREATED) hoặc đã vào phòng thành công (ROOM_JOINED)
                 case MessageType.ROOM_CREATED:
-                    MessageBox.Show("Tạo phòng thành công! Đang chờ đối thủ vào...", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    SetStatus("Da tao phong " + message.RoomId + ". Dang cho doi thu...");
+                    RequestRoomList();
                     break;
-                case MessageType.GAME_START:
-                    MoManHinhBanCo(msg.Symbol);
-                    break;
+
                 case MessageType.ROOM_JOINED:
-                    Console.WriteLine("Đã vào phòng thành công, chờ lệnh bắt đầu trận đấu...");
+                    SetStatus("Da vao phong " + message.RoomId + ".");
+                    break;
+
+                case MessageType.GAME_START:
+                    OpenGame(message);
                     break;
 
                 case MessageType.ERROR:
-                    MessageBox.Show(msg.Message2 ?? "Có lỗi xảy ra!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    SetStatus(message.Message2 ?? "Server bao loi.");
+                    break;
+
+                case MessageType.GET_HISTORY:
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        if (message.HistoryList != null)
+                        {
+                            listBoxHistory.Items.Clear();
+
+                            foreach (string match in message.HistoryList)
+                            {
+                                listBoxHistory.Items.Add(match);
+                            }
+
+                            MessageBox.Show("Đã cập nhật lịch sử đấu mới nhất!", "Thông báo");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Bạn chưa tham gia trận đấu nào hoặc không có lịch sử!", "Thông báo");
+                        }
+                    });
                     break;
             }
-            if (msg.Type == MessageType.ROOM_LIST)
+        }
+
+        private void ShowRooms(List<RoomInfo> rooms)
+        {
+            roomsGrid.Rows.Clear();
+
+            foreach (RoomInfo room in rooms)
             {
-                this.Invoke((MethodInvoker)delegate
-                {
-                    if (msg.Rooms != null)
-                    {
-                        foreach (var room in msg.Rooms)
-                        {
-                            string status = room.IsFull ? "Đang chơi" : "Đang chờ";
-                        }
-                    }
-                });
+                int rowIndex = roomsGrid.Rows.Add(
+                    room.RoomId ?? "",
+                    room.HostName ?? "",
+                    room.IsFull ? "Day" : "Dang cho");
+
+                roomsGrid.Rows[rowIndex].Tag = room.RoomId;
             }
         }
 
-        private void CapNhatBangDanhSachPhong(List<RoomInfo> rooms)
+        private void RequestRoomList()
         {
-            dgvDanhSachPhong.Rows.Clear();
+            SendToServer(new SharedMessage { Type = MessageType.GET_ROOM_LIST });
+            SetStatus("Dang tai danh sach phong...");
+        }
 
-            if (rooms == null) return;
-
-            foreach (var r in rooms)
+        private void SendToServer(SharedMessage message)
+        {
+            try
             {
-                string slot = r.IsFull ? "2/2" : "1/2";
-                string status = r.IsFull ? "🔴 Đang chơi" : "🟢 Đang chờ";
-
-                dgvDanhSachPhong.Rows.Add(r.RoomId, r.HostName, slot, status);
+                _connection.Send(message);
+            }
+            catch (Exception ex)
+            {
+                SetStatus("Khong gui duoc toi server: " + ex.Message);
             }
         }
 
-        private void YeuCauLayDanhSachPhong()
+        private string? GetSelectedRoomId()
         {
-            _connection.Send(new SharedMessage { Type = MessageType.GET_ROOM_LIST });
-        }
-
-        private void btnCreateRoom_Click(object sender, EventArgs e)
-        {
-            _connection.Send(new SharedMessage { Type = MessageType.CREATE_ROOM });
-        }
-
-        private void btnJoinRoom_Click(object sender, EventArgs e)
-        {
-            if (dgvDanhSachPhong.CurrentRow == null)
+            if (roomsGrid.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Vui lòng chọn một phòng trong danh sách để vào!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return null;
+            }
+
+            return roomsGrid.SelectedRows[0].Tag as string;
+        }
+
+        private void OpenGame(SharedMessage message)
+        {
+            if (_gameOpened)
+            {
                 return;
             }
 
-            string roomId = dgvDanhSachPhong.CurrentRow.Cells[0].Value?.ToString();
+            _gameOpened = true;
+            DetachConnectionEvents();
 
-            if (!string.IsNullOrEmpty(roomId))
+            GameForm gameForm = new GameForm(
+                _connection,
+                message.RoomId ?? "",
+                message.Symbol ?? "",
+                _playerName
+             );
+
+            gameForm.FormClosed += (_, _) => ReturnToLobby();
+            gameForm.Show();
+
+            Hide();
+        }
+
+        private void ReturnToLobby()
+        {
+            _gameOpened = false;
+
+            DetachConnectionEvents();
+            _connection.MessageReceived += Connection_MessageReceived;
+            _connection.ConnectionError += Connection_ConnectionError;
+            _connection.Disconnected += Connection_Disconnected;
+
+            Show();
+            RequestRoomList();
+        }
+
+        private void SetStatus(string text)
+        {
+            statusLabel.Text = text;
+        }
+
+        private void DetachConnectionEvents()
+        {
+            _connection.MessageReceived -= Connection_MessageReceived;
+            _connection.ConnectionError -= Connection_ConnectionError;
+            _connection.Disconnected -= Connection_Disconnected;
+        }
+        private void leaveRoomButton_Click(object sender, EventArgs e)
+        {
+            try
             {
                 _connection.Send(new SharedMessage
                 {
-                    Type = MessageType.JOIN_ROOM,
-                    RoomId = roomId
+                    Type = MessageType.LEAVE_ROOM
                 });
+
+                leaveRoomButton.Enabled = false;
+                createRoomButton.Enabled = true;
+                joinRoomButton.Enabled = false;
+
+
+                RequestRoomList();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Không thể rời phòng: " + ex.Message, "Lỗi");
             }
         }
 
-        private void btnQuickJoin_Click(object sender, EventArgs e)
+        private void btnViewHistory_Click(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in dgvDanhSachPhong.Rows)
+            _connection.Send(new CaroOnline.Shared.Message
             {
-                if (row.Cells[3].Value?.ToString() == "🟢 Đang chờ")
-                {
-                    string roomId = row.Cells[0].Value?.ToString();
-                    _connection.Send(new SharedMessage { Type = MessageType.JOIN_ROOM, RoomId = roomId });
-                    return;
-                }
-            }
-
-            MessageBox.Show("Hiện tại không có phòng nào trống, bạn hãy tự Tạo phòng mới nhé!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void MoManHinhBanCo(string symbol)
-        {
-            _connection.MessageReceived -= OnMessageReceived;
-            _connection.StopListening();
-
-            this.Hide();
-            GameForm game = new GameForm(_connection, _username, symbol);
-            game.ShowDialog();
-
-            this.Close();
-        }
-
-        private void btnRefresh_Click(object sender, EventArgs e)
-        {
-            var refreshMsg = new CaroOnline.Shared.Message
-            {
-                Type = MessageType.GET_ROOM_LIST
-            };
-            _connection.Send(refreshMsg);
-        }
-
-        private void dgvBaxXepHang_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
+                Type = MessageType.GET_HISTORY
+            });
         }
     }
 }

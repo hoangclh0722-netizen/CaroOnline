@@ -11,6 +11,7 @@ namespace CaroOnline.Client
         private string _mySymbol = "";
         private bool _isMyTurn;
         private bool _closingFromDisconnect;
+        private System.Windows.Forms.Timer? _returnToLobbyTimer;
 
         public GameForm()
         {
@@ -50,11 +51,12 @@ namespace CaroOnline.Client
                 _connection.MessageReceived -= Connection_MessageReceived;
                 _connection.ConnectionError -= Connection_ConnectionError;
                 _connection.Disconnected -= Connection_Disconnected;
+                _returnToLobbyTimer?.Stop();
+                _returnToLobbyTimer?.Dispose();
 
                 if (!_closingFromDisconnect)
                 {
                     TrySend(new SharedMessage { Type = MessageType.LEAVE_ROOM });
-                    _connection.Disconnect();
                 }
             }
 
@@ -151,16 +153,16 @@ namespace CaroOnline.Client
                         {
                             _myBestRecord = _myCurrentStreak; 
                         }
-                        MessageBox.Show($"Chúc mừng bạn đã chiến thắng! Chuỗi thắng hiện tại: {_myCurrentStreak}", "Thắng trận");
+                        ReturnToLobbyAfterResult($"Bạn đã thắng! Chuỗi thắng hiện tại: {_myCurrentStreak}");
                     }
                     else if (message.Winner == "DRAW") 
                     {
-                        MessageBox.Show("Trận đấu hòa!", "Kết quả");
+                        ReturnToLobbyAfterResult("Trận đấu hòa.");
                     }
                     else 
                     {
                         _myCurrentStreak = 0; 
-                        MessageBox.Show("Rất tiếc bạn đã thất bại! Chuỗi thắng bị ngắt.", "Thua trận");
+                        ReturnToLobbyAfterResult("Bạn đã thua. Chuỗi thắng bị ngắt.");
                     }
 
                     lblMyBestRecord.Text = $"(Kỷ lục: {_myBestRecord})";
@@ -197,6 +199,25 @@ namespace CaroOnline.Client
         private void SetStatus(string text)
         {
             turnLabel.Text = text;
+        }
+
+        private void ReturnToLobbyAfterResult(string resultMessage)
+        {
+            SetStatus(resultMessage + " Dang quay ve sanh...");
+
+            _returnToLobbyTimer?.Stop();
+            _returnToLobbyTimer?.Dispose();
+
+            _returnToLobbyTimer = new System.Windows.Forms.Timer
+            {
+                Interval = 1500
+            };
+            _returnToLobbyTimer.Tick += (_, _) =>
+            {
+                _returnToLobbyTimer?.Stop();
+                Close();
+            };
+            _returnToLobbyTimer.Start();
         }
 
         private void TrySend(SharedMessage message)
