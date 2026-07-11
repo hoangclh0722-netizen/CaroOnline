@@ -220,10 +220,23 @@ namespace CaroOnline.Client
                 _playerName
              );
 
-            gameForm.FormClosed += (_, _) => Close();
+            gameForm.FormClosed += (_, _) => ReturnToLobby();
             gameForm.Show();
 
             Hide();
+        }
+
+        private void ReturnToLobby()
+        {
+            _gameOpened = false;
+
+            DetachConnectionEvents();
+            _connection.MessageReceived += Connection_MessageReceived;
+            _connection.ConnectionError += Connection_ConnectionError;
+            _connection.Disconnected += Connection_Disconnected;
+
+            Show();
+            RequestRoomList();
         }
 
         private void SetStatus(string text)
